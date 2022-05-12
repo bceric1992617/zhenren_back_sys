@@ -24,20 +24,20 @@ export default {
                     nextItems: [
                         {
                             index: 'businessList',
-                            title: '商户列表'
+                            title: '商户管理'
                         },
                         {
-                            index: 'gameCategory',
-                            title: '游戏分类管理'
+                            index: 'user',
+                            title: '投注用户管理'
                         },
-                        {
-                            index: 'bannerSetting',
-                            title: 'banner配置'
-                        },
-                        {
-                            index: 'operatelog',
-                            title: '操作记录'
-                        },
+                        // {
+                        //     index: 'bannerSetting',
+                        //     title: 'banner配置'
+                        // },
+                        // {
+                        //     index: 'operatelog',
+                        //     title: '操作记录'
+                        // },
                     ]
                 }
             ]

@@ -8,13 +8,13 @@
             text-color="#7a8297"
             active-text-color="#2d8cf0"
             router>
-            <div v-for="item in items" :key="item">
+            <div v-for="item in items" :key="item.index">
                 <!-- 二级菜单 -->
                 <el-menu-item :index="item.index" :key="item.index" v-if="item.nextItems == undefined">
                     <span slot="title">{{ item.title }}</span>
                 </el-menu-item>
                 <!-- 三级菜单 -->
-                <el-submenu :index="item.index" v-else>
+                <el-submenu :index="item.title" v-else>
                     <span slot="title">{{item.title}}</span>
                     <el-menu-item-group>
                         <el-menu-item v-for="itemsTwo in item.nextItems" :index="itemsTwo.index" :key="itemsTwo.index">

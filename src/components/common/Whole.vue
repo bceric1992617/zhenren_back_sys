@@ -6,8 +6,8 @@
         <!-- 水平一级菜单 -->
         <div style="float:left;">
             <el-menu :default-active="toIndex()" mode="horizontal" @select="handleSelect">
-            <template v-for="item in items">
-                <el-menu-item :index="item.index" :key="item.index">
+            <template v-for="item,k in items">
+                <el-menu-item :index="item.index" :key="k">
                 <template slot="title">
                     <span slot="title">{{ item.title }}</span>
                 </template>

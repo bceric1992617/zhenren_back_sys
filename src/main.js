@@ -15,6 +15,9 @@ import './assets/css/main.css';
 import 'babel-polyfill';
 import api from './api/index';
 
+import common from '@/utils/common'
+Vue.prototype.$common = common
+
 
 Vue.use(VueRouter);
 const originalPush = VueRouter.prototype.push
@@ -54,6 +57,7 @@ router.beforeEach((to, from, next) => {
         }
     }
 });
+
 
 new Vue({
     router,

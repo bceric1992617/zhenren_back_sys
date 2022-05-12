@@ -4,6 +4,8 @@ import global from '../global/global';
 axios.defaults.baseURL = global.baseURL;
 
 const http = {
+    
+
     request ({ url, data = {}, method = 'GET', responseType }) {
         return new Promise((resolve, reject) => {
             this._request(url, resolve, reject, data, method, responseType);

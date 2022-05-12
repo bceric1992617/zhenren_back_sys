@@ -52,30 +52,30 @@ export default new Router({
                             path: 'businessList',
                             component: () => import('../page/business/businessManagement/businessList.vue'),
                             meta: {
-                                title: '商户列表'
+                                title: '商户管理'
                             }
                         },
                         {
-                            path: 'gameCategory',
-                            component: () => import('../page/business/businessManagement/gameCategory.vue'),
+                            path: 'User',
+                            component: () => import('../page/business/businessManagement/user.vue'),
                             meta: {
-                                title: '游戏分类管理'
+                                title: '投注用户管理'
                             }
                         },
-                        {
-                            path: 'bannerSetting',
-                            component: () => import('../page/business/businessManagement/bannerSetting.vue'),
-                            meta: {
-                                title: '游戏分类管理'
-                            }
-                        },
-                        {
-                            path: 'operatelog',
-                            component: () => import('../page/business/businessManagement/operatelog.vue'),
-                            meta: {
-                                title: '游戏分类管理'
-                            }
-                        },
+                        // {
+                        //     path: 'bannerSetting',
+                        //     component: () => import('../page/business/businessManagement/bannerSetting.vue'),
+                        //     meta: {
+                        //         title: '游戏分类管理'
+                        //     }
+                        // },
+                        // {
+                        //     path: 'operatelog',
+                        //     component: () => import('../page/business/businessManagement/operatelog.vue'),
+                        //     meta: {
+                        //         title: '游戏分类管理'
+                        //     }
+                        // },
                     ]
                 },
 
