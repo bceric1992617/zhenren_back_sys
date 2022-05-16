@@ -64,7 +64,7 @@ export default {
   data(){
     return{
       listQuery: Object.assign({}, defaultListQuery),
-      list: null,
+      list: [],
       total: null,
       listLoading: true,
       selectedList: [],
@@ -94,11 +94,7 @@ export default {
 
     getList() {    // 获取数据列表
       this.listLoading = true;
-      this.$api.test.testApi(this.listQuery).then(res => {
-        this.listLoading = false;
-        this.list = res.data.list;
-        this.total = res.data.total;
-      });
+
     },
 
     handleSelectionChange(val){    // 批量选择行数

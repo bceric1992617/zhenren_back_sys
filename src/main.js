@@ -9,32 +9,27 @@ import 'element-ui/lib/theme-chalk/index.css';
 import ViewUI from 'view-design';
 import 'view-design/dist/styles/iview.css';
 import echarts from 'echarts';
-import VueI18n from 'vue-i18n';
-import { messages } from './components/common/i18n';
+
 import './assets/css/main.css';
 import 'babel-polyfill';
-import api from './api/index';
-
 import common from '@/utils/common'
-Vue.prototype.$common = common
+
+
 
 
 Vue.use(VueRouter);
 const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => err)
+    return originalPush.call(this, location).catch(err => err)
 }
 Vue.prototype.$axios = axios;
-Vue.prototype.$api = api;
+Vue.prototype.$common = common
+
 Vue.use(VueResource);
 Vue.use(ElementUI);
 Vue.use(ViewUI);
 Vue.prototype.$echarts = echarts;
-Vue.use(VueI18n);
-const i18n = new VueI18n({
-    locale: 'zh',
-    messages
-});
+
 Vue.config.productionTip = false;
 
 //使用钩子函数对路由进行权限跳转
@@ -61,6 +56,5 @@ router.beforeEach((to, from, next) => {
 
 new Vue({
     router,
-    i18n,
     render: h => h(App)
 }).$mount('#app');

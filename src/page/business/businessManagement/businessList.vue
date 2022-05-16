@@ -80,7 +80,7 @@
       </el-table>
     </div>
 
-    <div class="pagination-container">
+    <div v-if="list.length > 0" class="pagination-container">
       <el-pagination
         background
         @size-change="handleSizeChange"
@@ -225,15 +225,14 @@
 
           <el-form-item class="float-l w-100" label="合作协议文件：" label-width="130px">
             <el-upload
-              name="files"
-              class="float-l w-input avatar-uploader"
-              action=""
+              class="float-l avatar-uploader"
+              action="/file/manyFileUpload"
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
               :before-upload="$common.beforeAvatarUpload"
               :headers="header"
               >
-            <img v-if="this.uploadImg" :src="this.uploadImg" class="avatar">
+            <img v-if="uploadImg" :src="uploadImg" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
@@ -280,7 +279,7 @@
 </template>
 
 <script>
-
+import * as API from '@/api/upload'
 
 
 export default {
@@ -289,10 +288,10 @@ export default {
   data(){
     return{
       header: {
-        authorization : 123
+        authorization : localStorage.getItem("token")
       },
       uploadImg: "",
-      active: 0,
+      active: 1,
       listQuery: {
         pageNum: 1,
         pageSize: this.$common.defaultPage,
@@ -305,7 +304,7 @@ export default {
       },
       dialogStatus: '',
       dialogFormVisible: false,
-      list: null,
+      list: [],
       total: 0,
       listLoading: true,
       rules: {
@@ -327,9 +326,19 @@ export default {
       this.contactInfoList.push(1)
     },
     delContactInfo(k) {
-      this.contactInfoList.splice(1,1)
+      this.contactInfoList.splice(k,1)
     },
+
     handleAvatarSuccess(res) { // 上传返回
+      if(res.code == 403) {
+        this.$message({
+          type: 'error',
+          message: res.message
+        })
+        this.$router.push("/login")
+        return
+      }
+
       if(res.code == 0) {
         this.$message({
           type: 'success',
@@ -345,6 +354,7 @@ export default {
           type: 'error',
           message: res.message
         })
+        
       }
     },
 

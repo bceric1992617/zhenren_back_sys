@@ -27,7 +27,7 @@
                         <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item disabled>修改密码</el-dropdown-item>
+                        <!-- <el-dropdown-item disabled>修改密码</el-dropdown-item> -->
                         <el-dropdown-item command="loginout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -44,6 +44,8 @@
 </template>
 
 <script>
+import * as API from '@/api/login'
+
 export default {
     data() {
         return {
@@ -69,12 +71,22 @@ export default {
             this.$router.push('/' + index);
         },
         // 用户名下拉菜单选择事件
+
+
+
         handleCommand(command) {
             if (command == 'loginout') {
-                localStorage.removeItem('ms_username');
-                this.$router.push('/login');
+                API.loginout().then(res => {
+                if(res.code == 0) {
+                    localStorage.removeItem('ms_username');
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('token');
+                    this.$router.push('/login');
+                }
+            })
             }
         }
+
     }
 }
 </script>
