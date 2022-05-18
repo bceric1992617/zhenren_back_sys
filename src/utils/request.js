@@ -15,11 +15,13 @@ const http = {
     },
     _request (url, resolve, reject, data = {}, method = 'GET', responseType, header) {
         const format = method.toLocaleLowerCase() == 'get' ? 'params' : 'data';
-        header['Content-Type'] = 'application/json';
-        if(url != "/login") {
+        if(header['Content-Type'] == '' || header['Content-Type'] == undefined) {
+            header['Content-Type'] = 'application/json';
+        }
+        if(url != "/sys/login") {
             header["Authorization"] = localStorage.getItem("token")
         }
-        console.log(321321)
+        console.log(header,123)
         axios({
             url: url,
             method: method,
@@ -27,17 +29,11 @@ const http = {
             headers: header,
             responseType
         }).then(res => {
-            
-            if(res.data.code == 0) {
-                resolve(res.data);
-                Vue.prototype.$message.success(res.data.message)
-            } else if(res.data.code == 403) {
+            // Vue.prototype.$message.success(res.data.message)
+            if(res.data.code == 403) {
                 router.push("/login")
-                Vue.prototype.$message.error(res.data.message)
-            } else {
-                Vue.prototype.$message.error(res.data.message)
             }
-            
+            resolve(res.data);
         }).catch(error => {
             reject(error);
         })

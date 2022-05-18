@@ -50,8 +50,11 @@ export default {
     data() {
         return {
             items: [    // 水平一级菜单栏的菜单
-                { index: 'home', title: '首页' },
+                // { index: 'home', title: '首页' },
                 { index: 'business', title: '商户' },
+                { index: 'dataCenter', title: '数据中心' },
+                { index: 'settingCenter', title: '设置中心' },
+                { index: 'sysCenter', title: '系统管理' },
             ]
         }
     },

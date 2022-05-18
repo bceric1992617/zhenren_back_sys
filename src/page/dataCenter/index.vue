@@ -20,21 +20,17 @@ export default {
             items: [
                 
                 {
-                    title: '商户配置管理',
-                    nextItems: [
-                        {
-                            index: 'businessList',
-                            title: '商户管理'
- 
-                        },
-                        {
-                            index: 'user',
-                            title: '投注用户管理'
-
-                        },
-
-                    ]
-                }
+                    index: 'registerList',
+                    title: '注册查询'
+                },
+                {
+                    index: 'tradeList',
+                    title: '交易记录查询'
+                },
+                {
+                    index: 'tradeRecord',
+                    title: '账变记录'
+                },
             ]
         }
     },

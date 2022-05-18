@@ -1,6 +1,11 @@
 <template>
     <div class="login-wrap">
-
+        <div class="top">
+            <p>
+                <img src="@/assets/img/publicPics/logoWhite.png" alt="">
+            </p>
+            <p>PLAYS中控管理</p>
+        </div>
         <div class="ms-login">
             <div class="ms-title">真人视讯</div>
             <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
@@ -10,31 +15,37 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password" style="margin-top:25px;">
-                    <el-input type="password" placeholder="登录密码" v-model="param.password" @keyup.enter.native="submitForm()">
-                        <el-button slot="prepend" icon="el-icon-lock"></el-button>
+                    <el-input type="password" placeholder="登录密码" v-model="param.password" show-password>
+                        <el-button slot="prepend" icon="el-icon-lock" ></el-button>
                     </el-input>
                 </el-form-item>
                 <div class="login-btn">
-                    <el-button type="primary" @click="submitForm()">登录</el-button>
+                    
+                    <p v-if="param.password == '' || param.userName == '' " class="loginBtn btnDisable" > 
+                        <b>登录</b>
+                    </p>
+                    <p v-else class="loginBtn btnEnable" @click="submitForm" > 
+                        <b>登录</b>
+                    </p>
                 </div>
             </el-form>
         </div>
 
         <el-dialog title="重置密码" :visible.sync="setPWForm" width="650px">
-            <el-form  ref="dataForm" :rules="rules" :model="modiArgs" label-position="right">
-                <el-form-item  label-width="130px"  label="新密码：" prop="userName">
-                    <el-input type="password"  v-model="modiArgs.content" class="w-70" placeholder="请输入新密码"/>
+            <el-form  ref="setPwdForm" :rules="rules" :model="modiArgs" label-position="right">
+                <el-form-item  label-width="130px"  label="新密码：" prop="newPassword">
+                    <el-input type="password"  v-model="modiArgs.newPassword" class="w-70" placeholder="请输入新密码"/>
                 </el-form-item>
-                <el-form-item  label-width="130px"  label="确认新密码：" prop="userName">
-                    <el-input type="password"  v-model="modiArgs.content" class="w-70" placeholder="请输入确认新密码"/>
+                <el-form-item  label-width="130px"  label="确认新密码：" prop="confirmPassword">
+                    <el-input type="password"  v-model="modiArgs.confirmPassword" class="w-70" placeholder="请输入确认新密码"/>
                 </el-form-item>
-                <el-form-item  label-width="130px"  label="生成谷歌key：" prop="userName">
-                    <el-input   v-model="modiArgs.content" class="w-70 m-r-10" placeholder="请输入生成谷歌key"/>
-                    <el-button type="text" @click="1">生成key</el-button>
-                    <el-button type="text" @click="$common.copyFn(modiArgs.content)">复制</el-button>
+                <el-form-item  label-width="130px"  label="生成谷歌key：" prop="googleKey">
+                    <el-input  v-model="modiArgs.googleKey" class="w-70 m-r-10" placeholder="请输入生成谷歌key"/>
+                    <el-button type="text" @click="getGoogleKey" v-bind:disabled="keyStatus">生成key</el-button>
+                    <el-button type="text" @click="$common.copyFn(modiArgs.googleKey)">复制</el-button>
                 </el-form-item>
-                <el-form-item  label-width="130px"  label="谷歌验证码：" prop="userName">
-                    <el-input   v-model="modiArgs.content" class="w-70" placeholder="请输入谷歌验证码"/>
+                <el-form-item  label-width="130px"  label="谷歌验证码：" prop="googleCode">
+                    <el-input   v-model="modiArgs.googleCode" class="w-70" placeholder="请输入谷歌验证码"/>
                 </el-form-item>
             </el-form>
             <div class="w-100 text-c">
@@ -46,7 +57,7 @@
             </div>
         </el-dialog>
 
-        <googleCode ref="googleCode"></googleCode>
+        <googleCode ref="googleCode" v-bind:userName="param.userName" v-bind:id="modiArgs.id"></googleCode>
 
     </div>
 </template>
@@ -62,18 +73,25 @@ export default {
     },
     data: function() {
         return {
+            keyStatus: false,
             setPWForm: false,
-            // checkGoogleCode: true,
             param: {
                 userName: 'baicai',
-                password: '123456'
+                password: '123321'
             },
             rules: {
-                userName: [{ required: true, message: '必填', trigger: 'blur' }],
-                password: [{ required: true, message: '必填', trigger: 'blur' }]
+                confirmPassword: [{ required: true, message: '必填', trigger: 'blur' }],
+                googleCode: [{ required: true, message: '必填', trigger: 'blur' }],
+                googleKey: [{ required: true, message: '必填', trigger: 'blur' }],
+                id: [{ required: true, message: '必填', trigger: 'blur' }],
+                newPassword: [{ required: true, message: '必填', trigger: 'blur' }]
             },
             modiArgs : {
-                content : ''
+                confirmPassword: "",
+                newPassword: "",
+                googleCode: "",
+                googleKey: "",
+                id: 0,
             }
         };
     },
@@ -81,24 +99,76 @@ export default {
 
     },
     methods: {
+        getGoogleKey() {
+            API.generateGoogleKey().then(res => {
+                if(res.code == 0) {
+                    this.$message.success(res.message)
+                    this.modiArgs.googleKey = res.data
+                } else {
+                    this.$message.error(res.message)
+                }
+            })
+        },
+        saveData() {
+            this.$refs.setPwdForm.validate(valid => {
+                if(valid) {
+
+
+                    let args = new URLSearchParams();
+                    args.append('confirmPassword', md5(this.param.userName + this.modiArgs.confirmPassword))
+                    args.append('newPassword', md5(this.param.userName + this.modiArgs.newPassword))
+                    args.append('id', this.modiArgs.id)
+                    args.append('googleKey', this.modiArgs.googleKey)
+                    args.append('googleCode', this.modiArgs.googleCode)
+
+
+                    API.firstEnter(args).then(res => {
+                        if(res.code == 0) {
+                            this.$router.push("/")
+                            localStorage.setItem('ms_username', this.param.userName);
+                            localStorage.setItem('token', "Bearer " + res.data.token);
+                            this.$message.success(res.message)
+                        } else {
+                            this.$message.error(res.message)
+                        }
+                    })
+                }
+            })
+        },
         submitForm() {
-            // this.$refs.googleCode.dialogFormVisible = true
-            // return
             this.$refs.login.validate(valid => {
                 if (valid) {
-                    var args = {}
-                    args.userName = this.param.userName
-                    args.password = md5(this.param.userName + this.param.password)
 
+                    let args = new URLSearchParams()
+                    args.append('userName', this.param.userName)
+                    args.append('password', md5(this.param.userName + this.param.password))
                     API.login(args).then(res => {
-                       if(res.code == 0) {
-                           localStorage.setItem('ms_username', this.param.userName);
-                           localStorage.setItem('token', "Bearer " + res.data.token);
-                           this.$router.push('/');
+                        if(res.code == 0) {
+                            if(res.data.googleSwitch == 1) {  
+                                if(res.data.googleKey == '') {
+                                    this.modiArgs = {
+                                        confirmPassword: "",
+                                        googleCode: "",
+                                        googleKey: "",
+                                        id: 0,
+                                        newPassword: "",
+                                    }
+                                    this.modiArgs.id = res.data.id
+                                    this.setPWForm = true
+                                } else {
+                                    this.$refs.googleCode.dialogFormVisible = true
+                                    this.$refs.googleCode.input = []
+                                }
+                            } else {
+                                localStorage.setItem('ms_username', this.param.userName);
+                                localStorage.setItem('token', "Bearer " + res.data.token);
+                                this.$router.push("/")
+                            }
+
+                       } else {
+                           this.$message.error(res.message)
                        }
                     })
-                } else {
-                    this.$message.error('请输入账号和密码');
                 }
             });
         }
@@ -133,8 +203,32 @@ export default {
 .login-wrap {
     position: absolute;
     width: 100%;
-    height: 100%;
+    height: 100%; 
+    /* background-size:100% 100%; */
+    background: url('../assets/img/publicPics/bg.png');
+    /* background-repeat:no-repeat; */
 }
+
+.top img {
+    width:60px;
+    height:60px;
+    
+}
+
+.top p {
+    color:#fff;
+    width:200px;
+    text-align: center;
+}
+
+.top {
+    padding-top:50px
+}
+
+
+
+
+
 .ms-title {
     width: 100%;
     text-align: center;
@@ -146,7 +240,7 @@ export default {
     width: 450px;
     height: 335px;
     max-width: 90%;
-    margin: 275px auto;
+    margin: 150px auto;
     border-radius: 5px;
     background: white;
     overflow: hidden;
@@ -163,4 +257,6 @@ export default {
     text-align: center;
     margin-bottom: 10px;
 }
+
+
 </style>

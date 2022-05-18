@@ -1,22 +1,31 @@
 <template>
   <div class="input-box">
-        <el-dialog title="google验证码" width="450px" top="200px" :visible.sync="dialogFormVisible" :show-close="showClo" :close-on-click-modal="false"  >
-            <div class="input-content" @keydown="keydown" @keyup="keyup" @paste="paste" @mousewheel="mousewheel" @input="inputEvent">
-                <input maxlength="1" data-index="0" v-model.trim.number="input[0]" ref="firstinput"/>
-                <input maxlength="1" data-index="1" v-model.trim.number="input[1]"/>
-                <input maxlength="1" data-index="2" v-model.trim.number="input[2]"/>
-                <input maxlength="1" data-index="3" v-model.trim.number="input[3]"/>
-                <input maxlength="1" data-index="4" v-model.trim.number="input[4]"/>
-                <input maxlength="1" data-index="5" v-model.trim.number="input[5]"/>
-            </div>
-            <div slot="footer" class="dialog-footer">
-                <el-button  @click="dialogFormVisible = false">
-                取消
-                </el-button>
-                <el-button type="primary" @click="sendCode()">
-                确定
-                </el-button>
-            </div>
+        <el-dialog width="600px" :visible.sync="dialogFormVisible" :show-close="showClo" :close-on-click-modal="false" >
+                <div slot="title" class="title">
+                    <img src="@/assets/img/publicPics/logoBlue.png" alt="">
+                    <span><b>PLAYS中控管理</b> </span>
+                </div>
+
+                <div class="googleContent">Google安全码验证</div>
+                <div class="notice">请输入6位数安全码</div>
+
+                <div class="input-content" @keydown="keydown" @keyup="keyup" @paste="paste" @mousewheel="mousewheel" @input="inputEvent">
+                    <input maxlength="1" data-index="0" v-model.trim.number="input[0]" ref="firstinput"/>
+                    <input maxlength="1" data-index="1" v-model.trim.number="input[1]"/>
+                    <input maxlength="1" data-index="2" v-model.trim.number="input[2]"/>
+                    <input maxlength="1" data-index="3" v-model.trim.number="input[3]"/>
+                    <input maxlength="1" data-index="4" v-model.trim.number="input[4]"/>
+                    <input maxlength="1" data-index="5" v-model.trim.number="input[5]"/>
+                </div>
+                <div >
+                    <p v-if="btnStatus" class="loginBtn btnEnable googleCodeBtn" @click="googleCheck"> 
+                        <b>登录</b>
+                    </p>
+                    <p v-else class="loginBtn btnDisable googleCodeBtn" > 
+                        <b>登录</b>
+                    </p>
+                </div>
+
 
         </el-dialog>
 
@@ -27,16 +36,21 @@
 
 
 <script>
-  export default {
+import * as API from '@/api/login'
+export default {
     data() {
       return {
         googleCode : '',
         showClo:false,
-        dialogFormVisible : true,
+        dialogFormVisible : false,
+        btnStatus : false,
         pasteResult: [],
+        userName: "",
+        id: 0,
+        input: []
       };
     },
-    props: ['code'],
+    props: ['userName','id'],
     computed: {
       input() {
         // code 是父组件传进来的默认值，必须是6位长度的数组，这里就不再做容错判断处理
@@ -45,6 +59,23 @@
       }
     },
     methods: {
+        googleCheck() {
+            let args = {}
+            args['id'] = this.id
+            args['googleCode'] = this.input[0] + this.input[1] + this.input[2] + this.input[3] + this.input[4] + this.input[5] 
+            API.generateGoogleKey(args).then(res => {
+                if(res.code == 0) {
+                    this.$router.push("/")
+                    localStorage.setItem('ms_username', this.userName);
+                    localStorage.setItem('token', "Bearer " + res.data.token);
+                    this.$message.success(res.message)
+
+                } else {
+                    this.$message.error(res.message)
+                }
+            })
+        },
+
       // 解决一个输入框输入多个字符
       inputEvent(e) {
         var index = e.target.dataset.index * 1;
@@ -149,26 +180,86 @@
         this.$refs.firstinput.focus()
       })
     },
+
+    updated() {
+        if(this.input[0] != '' && this.input[1] != '' && this.input[2] != '' && this.input[3] != '' && this.input[4] != '' && this.input[5] != '') {
+            this.btnStatus = true
+        }
+    }
   }
 </script>
 <style scoped>
+.title {
+    margin-top:10px
+}
+
+.googleContent {
+    width:100%;
+    color:#7E7E7E;
+    text-align: center;
+    font-size:24px;
+    font-weight: 600;
+}
+.notice {
+    width:100%;
+    color:#7E7E7E;
+    padding-left: 15px;
+    font-size:16px;
+    margin-top:60px
+}
+
+.title img {
+    width:30px;
+    height:30px;
+    vertical-align: middle;
+    margin-right:15px
+}
+
+.title span {
+    color:#2C3B59;
+    
+}
+
 .input-content {
     width: 100%;
+    margin-top:20px
 }
 
 .input-content input {
-    width:12%;
-    height:40px;
+    width:13%;
+    height:70px;
     margin-left:15px;
     text-align: center;
+    font-size:32px;
+    border:1px solid #BDBDBD
 
 }
  
+.googleCodeBtn {
+    margin-top:50px !important;
+    width:80% !important; 
+    margin:0 auto;
+}
  
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   appearance: none;
   margin: 0;
 }
-  
+
+/deep/ .el-dialog__header {
+    background: url('../../assets/img/publicPics/googleTitleBg.png');
+    background-repeat:no-repeat;
+    background-size:100% 15px;
+
+}
+
+/deep/ .el-dialog { 
+    border-radius: 7px;
+    height:420px;
+}
+
+
 </style>
+
+

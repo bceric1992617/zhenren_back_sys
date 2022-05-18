@@ -88,7 +88,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         :current-page.sync="listQuery.pageNum"
         :page-size="listQuery.pageSize"
-        :page-sizes="[10,20,50]"
+        :page-sizes="[10,20,50,100]"
         :total="total">
       </el-pagination>
     </div>
@@ -102,8 +102,8 @@
       </el-steps>
       <el-form class="m-t-20 w-100 float-l" ref="dataForm" :rules="rules" :model="modiArgs" label-position="right">
         <div v-if="active  == 0">
-          <el-form-item class="float-l w-input" label-width="130px"  label="协议名称：" prop="protocolName">
-            <el-input  v-model="modiArgs.protocolName" placeholder="请输入协议名称"  />
+          <el-form-item class="float-l w-input" label-width="130px"  label="协议名称：" prop="test">
+            <el-input  v-model="modiArgs.test" placeholder="请输入协议名称"  />
           </el-form-item>
           <el-form-item class="float-l w-input" label-width="130px"  label="C端默认语言：" prop="protocolName">
             <el-select class="w-100" v-model="modiArgs.status"  clearable>
@@ -279,7 +279,7 @@
 </template>
 
 <script>
-import * as API from '@/api/upload'
+
 
 
 export default {
@@ -308,8 +308,11 @@ export default {
       total: 0,
       listLoading: true,
       rules: {
+        test: [
+          { required: true, message: '请输入正确手机号码', trigger: 'blur' },
+        ],
         protocolName: [{ required: true, message: '必填', trigger: 'blur' }],
-        payAddress: [{ required: true, message: '必填', trigger: 'blur' }],
+        payAddress: [{ required: true, trigger: 'blur' }],
       },
       textMap: {
         update: '编辑',
@@ -322,6 +325,19 @@ export default {
     this.fetchData();
   },
   methods:{
+
+
+
+
+    // titleTest (rule, value, callback) {
+    //   const title= /^[\a-\z\A-\Z0-9\u4e00-\u9fe5]+$/
+    //   if (!title.test(value)) {
+    //     callback(new Error('标题只能输入中文、数字和英文'))
+    //   } else {
+    //     callback()
+    //   }
+    // },
+
     addContactInfo() {
       this.contactInfoList.push(1)
     },

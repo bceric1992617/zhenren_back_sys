@@ -1,6 +1,7 @@
 import { Message } from 'element-ui'
 
 const common = {
+
     resetArgs : (list) => { //清空参数
         Object.keys(list).forEach((k,v) => {
             if(k == "pageNum") {
@@ -10,9 +11,7 @@ const common = {
             } else {
                 list[k] = ""
             }
-            
         })
-        console.log(list)
         return list
     },
     beforeAvatarUpload : (file) => {
@@ -26,6 +25,10 @@ const common = {
         }
     },
     copyFn: (text) => {
+        if(text == '') {
+            Message.error('请先填写内容')
+            return
+        }
         var oInput = document.createElement("input");
         oInput.value = text;
         document.body.appendChild(oInput);
@@ -45,7 +48,6 @@ const common = {
     calculateType : ["盈利额", "投注额"],
     paymentType : ["每月", "每季度", "每半年", "每年"],
     walletProductType : ["转账钱包", "免转钱包"],
-
-
+    currencyList : ["人民币", "美元", "欧元"],
 }
 export default common

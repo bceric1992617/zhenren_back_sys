@@ -4,9 +4,10 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
-    routes: [{
+    routes: [
+        {
             path: '/',
-            redirect: '/dashboard'
+            redirect:'/business/businessList',
         },
         {
             path: '/',
@@ -15,23 +16,7 @@ export default new Router({
                 title: '整体页面布局'
             },
             children: [
-                {
-                    path: '/dashboard',
-                    component: () => import('../page/Dashboard.vue'),
-                    meta: {
-                        title: '首页'
-                    },
-                    redirect:'/home',     // 该配置是若点击选择父目录时，默认选中该父目录下的子路径页面
-                    children: [
-                        {
-                            path: '/home',
-                            component: () => import('../page/Dashboard.vue'),
-                            meta: {
-                                title: '首页'
-                            },
-                        }               
-                    ]
-                },
+
 
 
                 {
@@ -62,22 +47,99 @@ export default new Router({
                                 title: '投注用户管理'
                             }
                         },
-                        // {
-                        //     path: 'bannerSetting',
-                        //     component: () => import('../page/business/businessManagement/bannerSetting.vue'),
-                        //     meta: {
-                        //         title: '游戏分类管理'
-                        //     }
-                        // },
-                        // {
-                        //     path: 'operatelog',
-                        //     component: () => import('../page/business/businessManagement/operatelog.vue'),
-                        //     meta: {
-                        //         title: '游戏分类管理'
-                        //     }
-                        // },
+                        {
+                            path: 'UserDetail',
+                            component: () => import('../page/business/businessManagement/userDetail.vue'),
+                            meta: {
+                                title: '用户查看'
+                            }
+                        },
                     ]
                 },
+                {
+                    path: '/dataCenter',
+                    component: () => import('../page/dataCenter/index.vue'),
+                    meta: {
+                        title: '数据中心'
+                    },
+                    redirect:'/dataCenter/registerList',
+                    children:[
+                        {
+                            path: 'registerList',
+                            component: () => import('../page/dataCenter/registerList.vue'),
+                            meta: {
+                                title: '注册查询'
+                            }
+                        },
+                        {
+                            path: 'tradeList',
+                            component: () => import('../page/dataCenter/tradeList.vue'),
+                            meta: {
+                                title: '交易记录查询'
+                            }
+                        },
+                        {
+                            path: 'tradeRecord',
+                            component: () => import('../page/dataCenter/tradeRecord.vue'),
+                            meta: {
+                                title: '账变记录'
+                            }
+                        },
+                    ]
+                },
+
+                {
+                    path: '/settingCenter',
+                    component: () => import('../page/settingCenter/index.vue'),
+                    meta: {
+                        title: '设置中心'
+                    },
+                    redirect:'/settingCenter/levelSetting',
+                    children:[
+                        {
+                            path: 'levelSetting',
+                            component: () => import('../page/settingCenter/levelSetting.vue'),
+                            meta: {
+                                title: '商户等级设置'
+                            }
+                        },
+                        {
+                            path: 'rateSetting',
+                            component: () => import('../page/settingCenter/rateSetting.vue'),
+                            meta: {
+                                title: '平台费率设置'
+                            }
+                        },
+    
+                    ]
+                },
+                
+                {
+                    path: '/sysCenter',
+                    component: () => import('../page/sysCenter/index.vue'),
+                    meta: {
+                        title: '系统管理'
+                    },
+                    redirect:'/sysCenter/roleManagement',
+                    children:[
+                        {
+                            path: 'roleManagement',
+                            component: () => import('../page/sysCenter/roleManagement.vue'),
+                            meta: {
+                                title: '角色权限管理'
+                            }
+                        },
+                        {
+                            path: 'accountManagement',
+                            component: () => import('../page/sysCenter/accountManagement.vue'),
+                            meta: {
+                                title: '账户管理'
+                            }
+                        },
+    
+                    ]
+                },
+
 
 
                 {
