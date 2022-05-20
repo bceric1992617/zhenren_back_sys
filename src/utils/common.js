@@ -14,6 +14,24 @@ const common = {
         })
         return list
     },
+    isSet : (val)  => {
+        if(val == undefined || val == '' || val == null) {
+            return false
+        } else {
+            return true
+        }
+    },
+
+    transferToSearchParams(json) {
+        let args = new URLSearchParams()
+        for(var i in json) {
+            if(json[i] != "") {
+                args.append(i, json[i])
+            }
+        }
+        return args
+    },
+
     beforeAvatarUpload : (file) => {
         if (file.type != 'image/jpeg' && file.type != 'image/jpg' && file.type != 'image/png') {
             Message.error('上传头像图片只能是 jpg,jpeg,png 格式!')
@@ -41,13 +59,16 @@ const common = {
 
 
     timeOut: 3000,
-    defaultPage: 10,
+    defaultPage: 20,
+    statusType : ["启用", "禁用"],
+    isTest : ["正式商户", "测试商户"],
     langeType : ["简体中文", "英文"],
     commercialType : ["内部商户", "外部商户"],
-    currencyType : ["人民币", "美元","所有货币类型"],
     calculateType : ["盈利额", "投注额"],
     paymentType : ["每月", "每季度", "每半年", "每年"],
     walletProductType : ["转账钱包", "免转钱包"],
-    currencyList : ["人民币", "美元", "欧元"],
+    currencyList : ["美元", "人民币"],
+    calculateList : ["盈利额", "投注额"],
+    tradeList : ["转入", "转出", "下注", "结算", "下注取消", "拒单"],
 }
 export default common

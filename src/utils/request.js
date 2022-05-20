@@ -16,12 +16,12 @@ const http = {
     _request (url, resolve, reject, data = {}, method = 'GET', responseType, header) {
         const format = method.toLocaleLowerCase() == 'get' ? 'params' : 'data';
         if(header['Content-Type'] == '' || header['Content-Type'] == undefined) {
-            header['Content-Type'] = 'application/json';
+            header['Content-Type'] = 'application/x-www-form-urlencoded';
         }
         if(url != "/sys/login") {
             header["Authorization"] = localStorage.getItem("token")
         }
-        console.log(header,123)
+
         axios({
             url: url,
             method: method,
@@ -32,9 +32,11 @@ const http = {
             // Vue.prototype.$message.success(res.data.message)
             if(res.data.code == 403) {
                 router.push("/login")
+                return
             }
             resolve(res.data);
         }).catch(error => {
+            Vue.prototype.$message.error("异常错误")
             reject(error);
         })
     }

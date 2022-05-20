@@ -19,6 +19,11 @@ a {
     text-decoration: none
 }
 
+ul li {
+    list-style:none;
+}
+ul::-webkit-scrollbar { width: 0 !important }
+
 /* 页面主体部分 */
 .content-box {
     position: absolute;

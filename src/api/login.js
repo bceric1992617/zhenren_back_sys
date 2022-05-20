@@ -17,9 +17,6 @@ export function firstEnter(datas) {
     method: "post",
     url: "/sys/firstEnter",
     data: datas,
-    // header : {
-    //   "Content-Type" : "application/x-www-form-urlencoded"
-    // }
   });
 }
 
@@ -27,15 +24,14 @@ export function generateGoogleKey() {
   return http.request({
     method: "post",
     url: "/sys/generateGoogleKey",
-
   });
 }
 
-export function verifyGoogleCode() {
+export function verifyGoogleCode(datas) {
   return http.request({
     method: "post",
     url: "/sys/verifyGoogleCode",
-
+    data: datas,
   });
 }
 

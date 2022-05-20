@@ -3,13 +3,13 @@
   <div class="container">
       <el-form :inline="true" :model="listQuery" class="demo-form-inline">
         <el-form-item label="账变类型：">
-            <el-select v-model="listQuery.status" >
-              <el-option v-for="(item,k) in $common.currencyList" :key="k" :label="item" :value="k + 1"/>
+            <el-select v-model="listQuery.type" >
+              <el-option v-for="(item,k) in $common.tradeList" :key="k" :label="item" :value="k + 1"/>
             </el-select>
         </el-form-item>
         <el-form-item label="账变时间：">
           <el-date-picker
-          v-model="listQuery.protocolName"
+          v-model="listQuery.timeRange"
           type="datetimerange"
           start-placeholder="开始时间"
           end-placeholder="结束时间"
@@ -19,13 +19,13 @@
         </el-form-item>
 
         <el-form-item label="注单号：">
-          <el-input v-model="listQuery.protocolName" placeholder="请输入注单号" class="filter-item"  />
+          <el-input v-model="listQuery.relationId" placeholder="请输入注单号" class="filter-item"  />
         </el-form-item>
         <el-form-item label="用户ID/用户名：">
-          <el-input v-model="listQuery.protocolName" placeholder="请输入用户ID/用户名" class="filter-item"  />
+          <el-input v-model="listQuery.userUnique" placeholder="请输入用户ID/用户名" class="filter-item"  />
         </el-form-item>
         <el-form-item label="商户名称：">
-          <el-input v-model="listQuery.protocolName" placeholder="请输入商户名称" class="filter-item"  />
+          <el-input v-model="listQuery.merchantNames" placeholder="请输入商户名称" class="filter-item"  />
         </el-form-item>
 
 
@@ -38,7 +38,7 @@
       <el-button  class="filter-item" @click="reset">
         重置
       </el-button>
-      <el-button  class="filter-item" @click="reset">
+      <el-button  class="filter-item" @click="exprotInfo">
         导出
       </el-button>
 
@@ -47,39 +47,40 @@
       <el-table ref="Table1"
                 :data="list"
                 style="width: 100%;"
+                @sort-change="changeSort"
                 border>
-        <el-table-column label="序号" align="center"  width="50px">
-          <template slot-scope="scope">{{scope.row.userName}}</template>
+        <el-table-column :label="titleList[0]" align="center"  width="50px">
+          <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
-        <el-table-column label="账变时间" align="center">
-          <template slot-scope="scope">{{scope.row.sex}}</template>
+        <el-table-column :label="titleList[1]" align="center" sortable>
+          <template slot-scope="scope">{{scope.row.createTime}}</template>
         </el-table-column>
-        <el-table-column label="用户名" align="center">
-          <template slot-scope="scope">{{scope.row.age}}</template>
+        <el-table-column :label="titleList[2]" align="center">
+          <template slot-scope="scope">{{scope.row.username}}</template>
         </el-table-column>
-        <el-table-column label="用户ID" align="center">
-          <template slot-scope="scope">{{scope.row.nation}}</template>
+        <el-table-column :label="titleList[3]" align="center">
+          <template slot-scope="scope">{{scope.row.userId}}</template>
         </el-table-column>
-        <el-table-column label="所属商户" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
+        <el-table-column :label="titleList[4]" align="center">
+          <template slot-scope="scope">{{scope.row.merchantName}}</template>
         </el-table-column>
-        <el-table-column label="账变类型" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
+        <el-table-column :label="titleList[5]" align="center">
+          <template slot-scope="scope">{{$common.tradeList[scope.row.type - 1]}} </template>
         </el-table-column>
-        <el-table-column label="交易来源" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
+        <el-table-column :label="titleList[6]" align="center">
+          <template slot-scope="scope">{{$common.tradeList[scope.row.tradeSources - 1]}}</template>
         </el-table-column>
-        <el-table-column label="账变金额" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
+        <el-table-column :label="titleList[7]" align="center">
+          <template slot-scope="scope">{{scope.row.amount}}</template>
         </el-table-column>
-        <el-table-column label="账变前余额" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
+        <el-table-column :label="titleList[8]" align="center">
+          <template slot-scope="scope">{{scope.row.beforeAmount}}</template>
         </el-table-column>
-        <el-table-column label="账变后余额" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
+        <el-table-column :label="titleList[9]" align="center">
+          <template slot-scope="scope">{{scope.row.afterAmount}}</template>
         </el-table-column>
-        <el-table-column label="注单号" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
+        <el-table-column :label="titleList[10]" align="center">
+          <template slot-scope="scope">{{scope.row.relationId}}</template>
         </el-table-column>
 
       </el-table>
@@ -105,11 +106,10 @@
 </template>
 
 <script>
-
-
+import * as API from '@/api/dataCenter'
+import * as Public from '@/api/public'
 
 export default {
-
 
   data(){
     return{
@@ -119,8 +119,14 @@ export default {
       listQuery: {
         pageNum: 1,
         pageSize: this.$common.defaultPage,
-        protocolName: "",
-        timerange : ''
+        createTimeBy: "",
+        timeRange: '',
+        createStartTime : '',
+        createEndTime : '',
+        merchantNames : '',
+        relationId : '',
+        type : '',
+        userUnique : '',
       },
 
       dialogStatus: '',
@@ -128,6 +134,19 @@ export default {
       list: [],
       total: 0,
       listLoading: true,
+      titleList: [
+        "序号",
+        "账变时间",
+        "用户名",
+        "用户ID",
+        "所属商户",
+        "账变类型",
+        "交易来源",
+        "账变金额",
+        "账变前余额",
+        "账变后余额",
+        "注单号"
+      ]
 
     }
   },
@@ -136,6 +155,16 @@ export default {
   },
   methods:{
 
+    changeSort(column) { //上架时间排序
+      var args = {
+        "descending" : "desc",
+        "ascending" : "asc",
+      }
+
+      this.listQuery.createTimeBy = args[column.order]
+      this.listQuery.pageNum = 1
+      this.fetchData()
+    },
     handleSizeChange(val) {  // 改变列表显示条数
       this.listQuery.pageNum = 1;
       this.listQuery.pageSize = val;
@@ -148,7 +177,9 @@ export default {
 
 
     handleFilter() { //搜索
-      this.listQuery.page = 1
+      this.listQuery.pageNum = 1
+      this.listQuery.createStartTime = this.listQuery.timeRange[0]
+      this.listQuery.createEndTime = this.listQuery.timeRange[1]
       this.fetchData()
     },
     reset() {
@@ -158,24 +189,29 @@ export default {
     },
 
 
+    exprotInfo() {
+      let args = this.$common.transferToSearchParams(this.listQuery)
 
+      Public.exportChangeRecord(args).then(res => {
+        if(res.code == 0) {
+          this.$message.success(res.message)
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
 
     fetchData() {
       this.listLoading = true
-      // API.getUSDTReceipt(this.listQuery).then(res => {
-      //   this.listLoading = false
-      //   if(res.code == 0) {
-      //     this.list = res.data.records
-      //     this.total = res.data.total
-      //   }
-      // })
+      let args = this.$common.transferToSearchParams(this.listQuery)
 
-      // this.listLoading = true
-      // fetchList(this.listQuery).then(response => {
-      //   this.list = response.data.items
-      //   this.total = response.data.total
-      //   this.listLoading = false
-      // })
+      API.getChangeRecordPage(args).then(res => {
+        this.listLoading = false
+        if(res.code == 0) {
+          this.list = res.data.records
+          this.total = res.data.total
+        }
+      })
     },
   }
 }

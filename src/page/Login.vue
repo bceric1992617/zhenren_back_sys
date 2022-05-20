@@ -112,8 +112,6 @@ export default {
         saveData() {
             this.$refs.setPwdForm.validate(valid => {
                 if(valid) {
-
-
                     let args = new URLSearchParams();
                     args.append('confirmPassword', md5(this.param.userName + this.modiArgs.confirmPassword))
                     args.append('newPassword', md5(this.param.userName + this.modiArgs.newPassword))
@@ -144,6 +142,7 @@ export default {
                     args.append('password', md5(this.param.userName + this.param.password))
                     API.login(args).then(res => {
                         if(res.code == 0) {
+                            this.modiArgs.id = res.data.id
                             if(res.data.googleSwitch == 1) {  
                                 if(res.data.googleKey == '') {
                                     this.modiArgs = {
@@ -153,7 +152,6 @@ export default {
                                         id: 0,
                                         newPassword: "",
                                     }
-                                    this.modiArgs.id = res.data.id
                                     this.setPWForm = true
                                 } else {
                                     this.$refs.googleCode.dialogFormVisible = true

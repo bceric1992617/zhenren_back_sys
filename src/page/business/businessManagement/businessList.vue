@@ -3,13 +3,13 @@
   <div class="container">
       <el-form :inline="true" :model="listQuery" class="demo-form-inline">
         <el-form-item label="商户编号：">
-          <el-input v-model="listQuery.protocolName" placeholder="请输入" class="filter-item"  />
+          <el-input v-model="listQuery.merchantCode" placeholder="请输入" class="filter-item"  />
         </el-form-item>
         <el-form-item label="商户名称：">
-          <el-input v-model="listQuery.protocolName" placeholder="请输入" class="filter-item"  />
+          <el-input v-model="listQuery.merchantName" placeholder="请输入" class="filter-item"  />
         </el-form-item>
         <el-form-item label="商户账号：">
-          <el-input v-model="listQuery.protocolName" placeholder="请输入" class="filter-item"  />
+          <el-input v-model="listQuery.merchantAccount" placeholder="请输入" class="filter-item"  />
         </el-form-item>
 
       
@@ -28,50 +28,79 @@
       <el-table ref="Table1"
                 :data="list"
                 style="width: 100%;"
+                @sort-change="changeSort"
                 border>
-        <el-table-column label="序号" align="center"  width="50px">
-          <template slot-scope="scope">{{scope.row.userName}}</template>
+        <el-table-column :label="titleList[0]" align="center"  width="50px">
+          <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
-        <el-table-column label="商户编号" align="center">
-          <template slot-scope="scope">{{scope.row.sex}}</template>
+        <el-table-column :label="titleList[1]" align="center">
+          <template slot-scope="scope">{{scope.row.merchantCode}}</template>
         </el-table-column>
-        <el-table-column label="商户账号" align="center">
-          <template slot-scope="scope">{{scope.row.age}}</template>
+        <el-table-column :label="titleList[2]" align="center">
+          <template slot-scope="scope">{{scope.row.merchantAccount}}</template>
         </el-table-column>
-        <el-table-column label="商户名称" align="center">
-          <template slot-scope="scope">{{scope.row.nation}}</template>
+        <el-table-column :label="titleList[3]" align="center">
+          <template slot-scope="scope">{{scope.row.merchantName}}</template>
         </el-table-column>
-        <el-table-column label="商户等级" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
+        <el-table-column :label="titleList[4]" align="center" sortable>
+          <template slot-scope="scope">LV{{ scope.row.level }}</template>
         </el-table-column>
-        <el-table-column label="内外部商户" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
+        <el-table-column :label="titleList[5]" align="center">
+          <template slot-scope="scope">{{ $common.commercialType[scope.row.merchantType - 1] }}</template>
         </el-table-column>
-        <el-table-column label="C端默认语言" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
+        <el-table-column :label="titleList[6]" align="center"  width="125px">
+          <template slot-scope="scope">
+            <div v-if="isTestId == scope.row.id" >
+              <el-select v-model="scope.row.isTest" @change="updateUserStatus(scope.row)" >
+                <el-option v-for="(item,k) in $common.isTest" :key="k" :label="item" :value="k"/>
+              </el-select>
+            </div>
+            <div v-else @click="isTestId = scope.row.id">
+              {{ $common.isTest[scope.row.isTest] }}
+              <el-button type="text">
+                <i class="el-icon-edit"></i>
+              </el-button>
+            </div>
+          </template>
         </el-table-column>
-        <el-table-column label="商务联系人" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
+        <el-table-column :label="titleList[7]" align="center">
+          <template slot-scope="scope">{{ $common.langeType[scope.row.defaultLanguageType - 1]}}</template>
         </el-table-column>
-        <el-table-column label="联系方式" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
+        <el-table-column :label="titleList[8]" align="center">
+          <template slot-scope="scope"> {{ JSON.parse(scope.row.merchantContact)[0].name }}</template>
         </el-table-column>
-        <el-table-column label="商户维护人" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
+        <el-table-column :label="titleList[9]" align="center">
+          <template slot-scope="scope"> {{ JSON.parse(scope.row.merchantContact)[0].number }}</template>
         </el-table-column>
-        <el-table-column label="入驻时间" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
+        <el-table-column :label="titleList[10]" align="center">
+          <template slot-scope="scope">{{scope.row.merchantMaintainer}}</template>
         </el-table-column>
-        <el-table-column label="商户状态" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
+        <el-table-column :label="titleList[11]" align="center" sortable>
+          <template slot-scope="scope">{{scope.row.createTime}}</template>
         </el-table-column>
-        <el-table-column label="操作" width="120" align="center" fixed="right">
-          <template slot-scope="">
+        <el-table-column :label="titleList[12]" align="center">
+          <template @click="test" slot-scope="scope">
+            <div @click="changeStatus(scope.row)">
+              {{ $common.statusType[scope.row.status - 1 ]}}
+              <el-button type="text">
+                <i class="el-icon-edit"></i>
+              </el-button>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column :label="titleList[13]" width="120" align="center" fixed="right">
+          <template slot-scope="scope">
             <el-button type="text" @click="handleUpdate()">
               <i class="el-icon-edit"></i>
             </el-button>
             <el-button type="text" @click="handleUpdate()">
-              <i class="el-icon-document"></i>
+              <i class="el-icon-search"></i>
+            </el-button>
+            <el-button type="text" @click="handleIPUpdate(scope.row)">
+              <i class="el-icon-location-outline"></i>
+            </el-button>
+            <el-button type="text" @click="resetPw(scope.row)">
+              <i class="el-icon-key"></i>
             </el-button>
 
 
@@ -239,18 +268,25 @@
 
         </div>
         <div v-else-if="active  == 2">
-          <el-form-item class="w-50" label-width="130px"  label="钱包产品类型：" prop="protocolName">
+          <el-form-item class="w-50" label-width="150px"  label="钱包产品类型：" prop="protocolName">
             <el-select class="w-100" v-model="modiArgs.status"  clearable>
               <el-option v-for="(item,k) in $common.walletProductType" :key="k" :label="item" :value="k + 1"/>
             </el-select>
           </el-form-item>
-          <el-form-item class="w-100" label-width="130px"  label="IP白名单：" prop="protocolName">
-            <el-input :rows="4" type="textarea" v-model="modiArgs.content" placeholder="（多个IP白名单以英文“,”分割）" class="w-50" />
+          <el-form-item class="w-100" label-width="150px"  label="IP白名单：" prop="protocolName">
+            <el-input :rows="4" type="textarea" v-model="modiArgs.whiteIps" placeholder="（多个IP白名单以英文“,”分割）" class="w-50" />
+          </el-form-item>
+          <el-form-item class="w-100" label-width="150px"  label="服务器IP白名单：" prop="protocolName">
+            <el-input :rows="4" type="textarea" v-model="modiArgs.serverWhiteIps" placeholder="（多个IP白名单以英文“,”分割）" class="w-50" />
+          </el-form-item>
+
+          <el-form-item v-if="modiArgs.status == 2" class="w-100" label-width="150px"  label="加扣款接口URL：" prop="protocolName">
+            <el-input v-model="modiArgs.content" placeholder="请输入加扣款接口url" class="w-50" />
+          </el-form-item>
+          <el-form-item v-if="modiArgs.status == 2" class="w-100" label-width="150px"  label="加扣款回调URL：" prop="protocolName">
+            <el-input v-model="modiArgs.content" placeholder="请输入加扣款回调url" class="w-50" />
           </el-form-item>
         </div>
-
-
-
 
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -272,21 +308,54 @@
 
       </div>
     </el-dialog>
-    
+
+
+    <!-- IP编辑 -->
+    <el-dialog title="IP白名单编辑" :visible.sync="dialogIPFormVisible">
+      <el-form  ref="dataIPForm" :rules="IPRules" :model="modiIPArgs" label-position="right">
+          <el-form-item class="w-100" label-width="150px"  label="IP白名单：" prop="whiteIps">
+            <el-input :rows="4" type="textarea" v-model="modiIPArgs.whiteIps" placeholder="（多个IP白名单以英文“,”分割）" class="w-50" />
+          </el-form-item>
+          <el-form-item class="w-100" label-width="150px"  label="服务器IP白名单：" prop="serverWhiteIps">
+            <el-input :rows="4" type="textarea" v-model="modiIPArgs.serverWhiteIps" placeholder="（多个IP白名单以英文“,”分割）" class="w-50" />
+          </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogIPFormVisible = false">
+          取消
+        </el-button>
+        <el-button type="primary" @click="createIPData()">
+          保存
+        </el-button>
+      </div>
+    </el-dialog>
 
   </div>
 </div>
 </template>
 
 <script>
-
-
+import * as API from '@/api/businessCenter'
 
 export default {
-
-
   data(){
     return{
+      titleList: [
+        "序号",
+        "商户编号",
+        "商户账号",
+        "商户名称",
+        "商户等级",
+        "内外部商户",
+        "商户类型",
+        "C端默认语言",
+        "商务联系人",
+        "联系方式",
+        "商户维护人",
+        "入驻时间",
+        "商户状态",
+        "操作",
+      ],
       header: {
         authorization : localStorage.getItem("token")
       },
@@ -295,24 +364,36 @@ export default {
       listQuery: {
         pageNum: 1,
         pageSize: this.$common.defaultPage,
-        protocolName: "",
-        timerange : ''
+        merchantAccount: "",
+        merchantCode: "",
+        merchantName: "",
+        levelSort: "",
+        createTimeSort: "",
+
       },
       modiArgs: {
         protocolName: '',
         status: '',
       },
+      modiIPArgs: {
+        serverWhiteIps : '',
+        whiteIps : '',
+        id : '',
+      },
       dialogStatus: '',
       dialogFormVisible: false,
+      dialogIPFormVisible: false,
+      isTestId:'',
       list: [],
       total: 0,
       listLoading: true,
       rules: {
-        test: [
-          { required: true, message: '请输入正确手机号码', trigger: 'blur' },
-        ],
         protocolName: [{ required: true, message: '必填', trigger: 'blur' }],
         payAddress: [{ required: true, trigger: 'blur' }],
+      },
+      IPRules: {
+        serverWhiteIps: [{ required: true, message: '必填', trigger: 'blur' }],
+        whiteIps: [{ required: true, message: '必填', trigger: 'blur' }],
       },
       textMap: {
         update: '编辑',
@@ -325,19 +406,111 @@ export default {
     this.fetchData();
   },
   methods:{
+    handleIPUpdate(row) {
+      let newRow = JSON.parse(JSON.stringify(row))
+      this.modiIPArgs.serverWhiteIps = newRow.serverWhiteIps
+      this.modiIPArgs.whiteIps = newRow.whiteIps
+      this.modiIPArgs.id = newRow.id
+      this.dialogIPFormVisible = true;
+    },
+    createIPData() {
+      this.$refs.dataIPForm.validate(valid => {
+        if(valid) {
+          let args = this.$common.transferToSearchParams(this.modiIPArgs)
+          API.resetIp(args).then(res => {
+            if(res.code == 0) {
+              this.listQuery.pageNum = 1
+              this.fetchData()
+              this.dialogIPFormVisible = false
+              this.$message.success(res.message)
+            } else {
+              this.$message.error(res.message)
+            }
+          })
+        }
+      }) 
+    },
 
+    resetPw(row) {
 
+      var text = "确定重置密钥吗？一旦操作立即生效";
+      this.$confirm(text,"提示", {
+        cancelButtonText : "取消",
+        confirmButtonText : "确定",
+        type : 'warning'
+      }).then(() => {
+        let args =  new URLSearchParams();
+        args.append("id", row.id);
+        API.resetGoogleKey(args).then(res => {
+          if(res.code == 0) {
+            this.listQuery.pageNum = 1
+            this.fetchData()
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+      })
+    },
+    updateUserStatus(row){
+      let args =  new URLSearchParams();
+      args.append("id", row.id);
+      args.append("isTest", row.isTest);
+      API.updateIsTest(args).then(res => {
+          if(res.code == 0) {
+            row.isTest = row.isTest;
+            this.isTestId = ''
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
+          }
+      })
+    },
+    changeStatus(row){
+      if(row.status == 2) {
+        var status = 1;
+        var text = "确定启用吗？一旦操作立即生效";
+      } else {
+        var status = 2;
+        var text = "确定禁用吗？一旦操作立即生效";
+      }
 
+      this.$confirm(text,"提示", {
+        cancelButtonText : "取消",
+        confirmButtonText : "确定",
+        type : 'warning'
+      }).then(() => {
+        let args =  new URLSearchParams();
+        args.append("id", row.id);
+        args.append("status", status);
+        API.updateStatus(args).then(res => {
+          if(res.code == 0) {
+            row.status = status
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+      })
+    },
+    changeSort(column) { //上架时间排序
+      this.listQuery.createTimeSort = ""
+      this.listQuery.levelSort = ""
 
-    // titleTest (rule, value, callback) {
-    //   const title= /^[\a-\z\A-\Z0-9\u4e00-\u9fe5]+$/
-    //   if (!title.test(value)) {
-    //     callback(new Error('标题只能输入中文、数字和英文'))
-    //   } else {
-    //     callback()
-    //   }
-    // },
+      var args = {
+        "descending" : "desc",
+        "ascending" : "asc",
+      }
 
+      if(column.column.label == this.titleList[4]) {
+        this.listQuery.levelSort = args[column.order]
+      } else if(column.column.label == this.titleList[10]) {
+        this.listQuery.createTimeSort = args[column.order]
+      }
+      
+      this.listQuery.pageNum = 1
+      this.fetchData()
+    },
     addContactInfo() {
       this.contactInfoList.push(1)
     },
@@ -405,7 +578,7 @@ export default {
       this.fetchData()  
     },
 
-    handleUpdate() { //添加
+    handleUpdate() {
       this.active = 0;
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
@@ -414,28 +587,23 @@ export default {
       this.active = 0;
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
-
-
     },
 
 
     fetchData() {
       this.listLoading = true
-      // API.getUSDTReceipt(this.listQuery).then(res => {
-      //   this.listLoading = false
-      //   if(res.code == 0) {
-      //     this.list = res.data.records
-      //     this.total = res.data.total
-      //   }
-      // })
+      let args = this.$common.transferToSearchParams(this.listQuery)
 
-      // this.listLoading = true
-      // fetchList(this.listQuery).then(response => {
-      //   this.list = response.data.items
-      //   this.total = response.data.total
-      //   this.listLoading = false
-      // })
+      API.getBusinessList(args).then(res => {
+        this.listLoading = false
+        if(res.code == 0) {
+          this.list = res.data.records
+          this.total = res.data.total
+        }
+      })
     },
+
+
   }
 }
 </script>

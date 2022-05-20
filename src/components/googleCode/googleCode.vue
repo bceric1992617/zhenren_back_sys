@@ -46,7 +46,7 @@ export default {
         btnStatus : false,
         pasteResult: [],
         userName: "",
-        id: 0,
+        // id: 0,
         input: []
       };
     },
@@ -58,22 +58,25 @@ export default {
         return this.code || this.pasteResult.length === 6 ? this.pasteResult : ['', '', '', '', '', '']
       }
     },
+    mounted() {
+
+    },
     methods: {
         googleCheck() {
-            let args = {}
-            args['id'] = this.id
-            args['googleCode'] = this.input[0] + this.input[1] + this.input[2] + this.input[3] + this.input[4] + this.input[5] 
-            API.generateGoogleKey(args).then(res => {
-                if(res.code == 0) {
-                    this.$router.push("/")
-                    localStorage.setItem('ms_username', this.userName);
-                    localStorage.setItem('token', "Bearer " + res.data.token);
-                    this.$message.success(res.message)
-
-                } else {
-                    this.$message.error(res.message)
-                }
-            })
+          let args = new URLSearchParams()
+          args.append('id', this.id)
+          args.append('googleCode', this.input[0] + this.input[1] + this.input[2] + this.input[3] + this.input[4] + this.input[5])
+          
+          API.verifyGoogleCode(args).then(res => {
+              if(res.code == 0) {
+                  this.$router.push("/")
+                  localStorage.setItem('ms_username', this.userName);
+                  localStorage.setItem('token', "Bearer " + res.data.token);
+                  this.$message.success(res.message)
+              } else {
+                  this.$message.error(res.message)
+              }
+          })
         },
 
       // 解决一个输入框输入多个字符
@@ -135,7 +138,7 @@ export default {
           el.nextElementSibling && el.nextElementSibling.focus();
           if (index === 5) {
             if (this.input.join('').length === 6) {
-                // console.log(123)
+
                 document.activeElement.blur();
                 this.$emit('complete', this.input);
             }
@@ -174,16 +177,20 @@ export default {
         })
       }
     },
-    mounted() {
-      // 等待dom渲染完成，在执行focus,否则无法获取到焦点
-      this.$nextTick(() => {
-        this.$refs.firstinput.focus()
-      })
-    },
+
 
     updated() {
-        if(this.input[0] != '' && this.input[1] != '' && this.input[2] != '' && this.input[3] != '' && this.input[4] != '' && this.input[5] != '') {
-            this.btnStatus = true
+        if(
+          this.$common.isSet(this.input[0]) &&
+          this.$common.isSet(this.input[1]) &&
+          this.$common.isSet(this.input[2]) &&
+          this.$common.isSet(this.input[3]) &&
+          this.$common.isSet(this.input[4]) &&
+          this.$common.isSet(this.input[5])
+        ) {
+          this.btnStatus = true
+        } else {
+          this.btnStatus = false
         }
     }
   }

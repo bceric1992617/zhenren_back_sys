@@ -85,11 +85,11 @@ export default {
       this.loading = true
       this.$api[this.api](Object.assign(this.searchParams, {
         start: (this.currentPage - 1) * this.pageSize,
-        // start: (this.currentPage),
+
         limit: this.pageSize
       })).then((res) => {
         if (res) {
-          // console.log('page',res.total);
+
           this.total = res.total
           this.rows = res.list
           this.$emit('datas', res.list)
