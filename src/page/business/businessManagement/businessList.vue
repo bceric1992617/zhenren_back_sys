@@ -1,15 +1,15 @@
 <template>
-<div class="content-box">
+<div class="content-box" @click="isTestId = ''">
   <div class="container">
       <el-form :inline="true" :model="listQuery" class="demo-form-inline">
         <el-form-item label="商户编号：">
-          <el-input v-model="listQuery.merchantCode" placeholder="请输入" class="filter-item"  />
+          <el-input v-model="listQuery.merchantCode" placeholder="请输入商户编号" class="filter-item"  />
         </el-form-item>
         <el-form-item label="商户名称：">
-          <el-input v-model="listQuery.merchantName" placeholder="请输入" class="filter-item"  />
+          <el-input v-model="listQuery.merchantName" placeholder="请输入商户名称" class="filter-item"  />
         </el-form-item>
         <el-form-item label="商户账号：">
-          <el-input v-model="listQuery.merchantAccount" placeholder="请输入" class="filter-item"  />
+          <el-input v-model="listQuery.merchantAccount" placeholder="请输入商户账号" class="filter-item"  />
         </el-form-item>
 
       
@@ -55,10 +55,10 @@
                 <el-option v-for="(item,k) in $common.isTest" :key="k" :label="item" :value="k"/>
               </el-select>
             </div>
-            <div v-else @click="isTestId = scope.row.id">
+            <div v-else @click.stop="isTestId = scope.row.id">
               {{ $common.isTest[scope.row.isTest] }}
               <el-button type="text">
-                <i class="el-icon-edit"></i>
+                <i class="el-icon-edit-outline"></i>
               </el-button>
             </div>
           </template>
@@ -83,23 +83,23 @@
             <div @click="changeStatus(scope.row)">
               {{ $common.statusType[scope.row.status - 1 ]}}
               <el-button type="text">
-                <i class="el-icon-edit"></i>
+                <i class="el-icon-edit-outline"></i>
               </el-button>
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="titleList[13]" width="120" align="center" fixed="right">
+        <el-table-column :label="titleList[13]" width="140" align="center" fixed="right">
           <template slot-scope="scope">
-            <el-button type="text" @click="handleUpdate()">
-              <i class="el-icon-edit"></i>
+            <el-button class="text-20" type="text" @click="handleUpdate(scope.row,false)">
+              <i class="el-icon-edit-outline"></i>
             </el-button>
-            <el-button type="text" @click="handleUpdate()">
+            <el-button class="text-20" type="text" @click="handleUpdate(scope.row,true)">
               <i class="el-icon-search"></i>
             </el-button>
-            <el-button type="text" @click="handleIPUpdate(scope.row)">
+            <el-button class="text-20" type="text" @click="handleIPUpdate(scope.row)">
               <i class="el-icon-location-outline"></i>
             </el-button>
-            <el-button type="text" @click="resetPw(scope.row)">
+            <el-button class="text-20" type="text" @click="resetPw(scope.row)">
               <i class="el-icon-key"></i>
             </el-button>
 
@@ -129,95 +129,104 @@
         <el-step title="商户信息"></el-step>
         <el-step title="技术参数"></el-step>
       </el-steps>
-      <el-form class="m-t-20 w-100 float-l" ref="dataForm" :rules="rules" :model="modiArgs" label-position="right">
+   
         <div v-if="active  == 0">
-          <el-form-item class="float-l w-input" label-width="130px"  label="协议名称：" prop="test">
-            <el-input  v-model="modiArgs.test" placeholder="请输入协议名称"  />
+          <el-form class="m-t-20 w-100 float-l" ref="step1DataForm" :rules="rules1" :model="modiArgs.step1" label-position="right">
+          
+          <el-form-item v-if="dialogStatus != 'create'" class="float-l w-input" label-width="130px"  label="商户编号：" prop="merchantAccount">
+            <el-input disabled v-model="modiArgs.step1.merchantCode" placeholder="请输入商户编号"  />
           </el-form-item>
-          <el-form-item class="float-l w-input" label-width="130px"  label="C端默认语言：" prop="protocolName">
-            <el-select class="w-100" v-model="modiArgs.status"  clearable>
+          <el-form-item class="float-l w-input" label-width="130px"  label="C端默认语言：" prop="defaultLanguageType">
+            <el-select :disabled="isDetail" class="w-100" v-model="modiArgs.step1.defaultLanguageType" >
               <el-option v-for="(item,k) in $common.langeType" :key="k" :label="item" :value="k + 1"/>
             </el-select>
           </el-form-item>
-
-          <el-form-item class="float-l w-input" label-width="130px"  label="商户账号：" prop="protocolName">
-            <el-input  v-model="modiArgs.protocolName" placeholder="请输入商户账号"  />
-          </el-form-item>
-          <el-form-item class="float-l w-input" label-width="130px"  label="商户密码：" prop="protocolName">
-            <el-input   v-model="modiArgs.protocolName" placeholder="请输入商户密码"  />
+          <el-form-item class="float-l w-input" label-width="130px"  label="商户账号：" prop="merchantAccount">
+            <el-input :disabled="isDetail" v-model="modiArgs.step1.merchantAccount" placeholder="请输入商户账号"  />
           </el-form-item>
 
-          <el-form-item class="float-l w-input" label-width="130px"  label="商户名称：" prop="protocolName">
-            <el-input  v-model="modiArgs.protocolName" placeholder="请输入商户名称"  />
+          <el-form-item class="float-l w-input" label-width="130px"  label="商户密码：" :prop=" dialogStatus == 'create' ? 'merchantPassword' : ''">
+            <el-input :disabled="isDetail" v-model="modiArgs.step1.merchantPassword" placeholder="请输入商户密码"  />
           </el-form-item>
-          <el-form-item class="float-l w-input" label-width="130px"  label="邮箱地址：" prop="protocolName">
-            <el-input   v-model="modiArgs.protocolName" placeholder="请输入邮箱地址"  />
+          <el-form-item class="float-l w-input" label-width="130px"  label="商户名称：" prop="merchantName">
+            <el-input :disabled="isDetail" v-model="modiArgs.step1.merchantName" placeholder="请输入商户名称"  />
           </el-form-item>
 
-          <div v-for="item,k in contactInfoList" :key="k">
-            <el-form-item class="float-l w-input" label-width="130px"  label="商务联系人：" prop="protocolName">
-              <el-input  v-model="modiArgs.protocolName" placeholder="请输入商务联系人"  />
+          <el-form-item class="float-l w-input" label-width="130px"  label="邮箱地址：" prop="email">
+            <el-input :disabled="isDetail" v-model="modiArgs.step1.email" placeholder="请输入邮箱地址"  />
+          </el-form-item>
+          <el-form-item v-if="dialogStatus == 'create'" class="float-l w-input" style="height:40px">
+          </el-form-item>
+
+          <div v-for="item,k in modiArgs.step1.merchantContactStr" :key="k">
+            <el-form-item class="float-l w-input" label-width="130px"  label="商务联系人：" :prop="contactList[k].name" >
+              <el-input :disabled="isDetail" v-model="item.name" placeholder="请输入商务联系人"  />
             </el-form-item>
-            <el-form-item class="float-l w-input" label-width="130px"  label="商务方式：" prop="protocolName">
-              <el-input   v-model="modiArgs.protocolName" placeholder="请输入商务方式"  />
+            <el-form-item class="float-l w-input" label-width="130px"  label="商务方式：" :prop="contactList[k].number">
+              <el-input :disabled="isDetail" v-model="item.number" placeholder="请输入商务方式"  />
             </el-form-item>
-            <p v-if="k == 0" @click="addContactInfo" class="float-l p-10" > 
-              <i class="el-icon-plus"></i>  
+          <div v-if="!isDetail">
+            <p v-if="k == 0" @click="addContactInfo" class="float-l m-l-10" > 
+              <el-button type="text" class="text-20">
+                <i class="el-icon-plus"></i>  
+              </el-button>
             </p>
-            <p v-else @click="delContactInfo(k)" class="float-l p-10"> 
-              <i class="el-icon-close"></i>    
+            <p v-else @click="delContactInfo(k)" class="float-l m-l-10"> 
+              <el-button type="text" class="text-20">
+                <i class="el-icon-close"></i>    
+              </el-button>
             </p>
+            </div>
           </div>
 
           <el-form-item class="float-l w-input" label-width="130px"  label="国家：" >
-            <el-input  v-model="modiArgs.protocolName" placeholder="请输入国家"  />
+            <el-input :disabled="isDetail" v-model="modiArgs.step1.nation" placeholder="请输入国家"  />
           </el-form-item>
           <el-form-item class="float-l w-input" label-width="130px"  label="省市区：" >
-            <el-input   v-model="modiArgs.protocolName" placeholder="请输入省市区"  />
+            <el-input :disabled="isDetail" v-model="modiArgs.step1.city" placeholder="请输入省市区"  />
           </el-form-item>
 
           <el-form-item class="float-l w-100" label-width="130px"  label="详细地址：">
-            <el-input :rows="4" type="textarea" v-model="modiArgs.content" placeholder="请输入详细地址" class="w-50" />
+            <el-input :disabled="isDetail" :rows="4" type="textarea" v-model="modiArgs.step1.address" placeholder="请输入详细地址" class="w-50" />
           </el-form-item>
-
+          </el-form>
 
         </div>
         <div v-else-if="active  == 1">
-          <el-form-item class="float-l w-input-30" label-width="130px"  label="商户等级：" prop="protocolName">
-            <el-select class="w-100" v-model="modiArgs.status"  clearable placeholder="请选择商户等级">
-              <el-option v-for="(item,k) in $common.currencyType" :key="k" :label="item" :value="k + 1"/>
-            </el-select>
+          <el-form class="m-t-20 w-100 float-l" ref="step2DataForm" :rules="rules2" :model="modiArgs.step2" label-position="right">
+          <el-form-item class="float-l w-input-30" label-width="130px"  label="商户等级：" prop="level">
+            <el-input :disabled="isDetail" v-model="modiArgs.step2.level" placeholder="请输入商户等级"  />
           </el-form-item>
-          <el-form-item class="float-l w-input-30" label-width="130px"  label="内外部商户：" prop="protocolName">
-            <el-select class="w-100" v-model="modiArgs.status"  clearable placeholder="请选择内外部商户">
+          <el-form-item class="float-l w-input-30" label-width="130px"  label="内外部商户：" prop="merchantType">
+            <el-select :disabled="isDetail" class="w-100" v-model="modiArgs.step2.merchantType"  clearable placeholder="请选择内外部商户">
               <el-option v-for="(item,k) in $common.commercialType" :key="k" :label="item" :value="k + 1"/>
             </el-select>
           </el-form-item>
-          <el-form-item class="float-l w-input-30" label-width="130px"  label="结算币种：" prop="protocolName">
-            <el-select class="w-100" v-model="modiArgs.status"  clearable placeholder="请选择结算币种">
-              <el-option v-for="(item,k) in $common.currencyType" :key="k" :label="item" :value="k + 1"/>
+          <el-form-item class="float-l w-input-30" label-width="130px"  label="结算币种：" prop="settleCurrency">
+            <el-select :disabled="isDetail" class="w-100" v-model="modiArgs.step2.settleCurrency"  clearable placeholder="请选择结算币种">
+              <el-option v-for="(item,k) in $common.currencyList" :key="k" :label="item" :value="k + 1"/>
             </el-select>
           </el-form-item>
 
-          <el-form-item class="float-l w-input-30" label-width="130px"  label="平台费率(%)：" prop="protocolName">
-            <el-input  v-model="modiArgs.protocolName" placeholder="请输入平台费率" type="number"  />
+          <el-form-item class="float-l w-input-30" label-width="130px"  label="平台费率(%)：" prop="platformRate">
+            <el-input :disabled="isDetail" v-model="modiArgs.step2.platformRate" placeholder="请输入平台费率" type="number"  />
           </el-form-item>
-          <el-form-item class="float-l w-input-30" label-width="130px"  label="计算标准：" prop="protocolName">
-            <el-select class="w-100" v-model="modiArgs.status"  clearable placeholder="请选择计算标准">
+          <el-form-item class="float-l w-input-30" label-width="130px"  label="计算标准：" prop="platformCalculateType">
+            <el-select :disabled="isDetail" class="w-100" v-model="modiArgs.step2.platformCalculateType"  clearable placeholder="请选择计算标准">
               <el-option v-for="(item,k) in $common.calculateType" :key="k" :label="item" :value="k + 1"/>
             </el-select>
           </el-form-item>
-          <el-form-item class="float-l w-input-30" label-width="130px"  label="缴纳周期：" prop="protocolName">
-            <el-select class="w-100" v-model="modiArgs.status"  clearable placeholder="请选择缴纳周期">
+          <el-form-item class="float-l w-input-30" label-width="130px"  label="缴纳周期：" prop="platformPaymentType">
+            <el-select :disabled="isDetail" class="w-100" v-model="modiArgs.step2.platformPaymentType"  clearable placeholder="请选择缴纳周期">
               <el-option v-for="(item,k) in $common.paymentType" :key="k" :label="item" :value="k + 1"/>
             </el-select>
           </el-form-item>
 
           <el-form-item class="float-l w-input-30" label-width="130px"  label="会员费：">
-            <el-input  v-model="modiArgs.protocolName" placeholder="请输入会员费"   />
+            <el-input :disabled="isDetail" v-model="modiArgs.step2.memberFee" placeholder="请输入会员费"/>
           </el-form-item>
           <el-form-item class="float-l  w-input-30" label-width="130px"  label="缴纳周期：">
-            <el-select class="w-100" v-model="modiArgs.status"  clearable placeholder="请选择缴纳周期">
+            <el-select :disabled="isDetail" class="w-100" v-model="modiArgs.step2.memberPaymentType"  clearable placeholder="请选择缴纳周期">
               <el-option v-for="(item,k) in $common.paymentType" :key="k" :label="item" :value="k + 1"/>
             </el-select>
           </el-form-item>
@@ -225,10 +234,10 @@
           </el-form-item>
 
           <el-form-item class="float-l w-input-30" label-width="130px"  label="技术服务费：">
-            <el-input  v-model="modiArgs.protocolName" placeholder="请输入技术服务费"   />
+            <el-input :disabled="isDetail" v-model="modiArgs.step2.technologyFee" placeholder="请输入技术服务费"   />
           </el-form-item>
           <el-form-item class="float-l w-input-30" label-width="130px"  label="缴纳周期：">
-            <el-select class="w-100" v-model="modiArgs.status"  clearable placeholder="请选择缴纳周期">
+            <el-select :disabled="isDetail" class="w-100" v-model="modiArgs.step2.technologyPaymentType"  clearable placeholder="请选择缴纳周期">
               <el-option v-for="(item,k) in $common.paymentType" :key="k" :label="item" :value="k + 1"/>
             </el-select>
           </el-form-item>
@@ -247,48 +256,57 @@
             </el-date-picker>
           </el-form-item> -->
           <el-form-item class="float-l w-input-30" label-width="130px"  label="商户维护人：">
-            <el-input  v-model="modiArgs.protocolName" placeholder="请输入商户维护人"   />
+            <el-input :disabled="isDetail" v-model="modiArgs.step2.merchantMaintainer" placeholder="请输入商户维护人"   />
           </el-form-item>
           <el-form-item class="float-l  w-input-30" style="height:40px">
           </el-form-item>
 
           <el-form-item class="float-l w-100" label="合作协议文件：" label-width="130px">
-            <el-upload
-              class="float-l avatar-uploader"
-              action="/file/manyFileUpload"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="$common.beforeAvatarUpload"
-              :headers="header"
-              >
-            <img v-if="uploadImg" :src="uploadImg" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
+            <div v-if="isDetail">
+              <img v-if="uploadImg" :src="uploadImg" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </div>
+            <div v-else>
+              <el-upload
+                name="files"
+                class="float-l avatar-uploader"
+                action="/file/manyFileUpload"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="$common.beforeAvatarUpload"
+                :headers="header"
+                >
+              <img v-if="uploadImg" :src="uploadImg" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </div>
           </el-form-item>
-
+          </el-form>
         </div>
         <div v-else-if="active  == 2">
-          <el-form-item class="w-50" label-width="150px"  label="钱包产品类型：" prop="protocolName">
-            <el-select class="w-100" v-model="modiArgs.status"  clearable>
+          <el-form class="m-t-20 w-100 float-l" ref="step3DataForm" :rules="rules3" :model="modiArgs.step3" label-position="right">
+          <el-form-item class="w-50" label-width="150px"  label="钱包产品类型：" prop="walletType">
+            <el-select :disabled="isDetail" class="w-100" v-model="modiArgs.step3.walletType"  clearable>
               <el-option v-for="(item,k) in $common.walletProductType" :key="k" :label="item" :value="k + 1"/>
             </el-select>
           </el-form-item>
-          <el-form-item class="w-100" label-width="150px"  label="IP白名单：" prop="protocolName">
-            <el-input :rows="4" type="textarea" v-model="modiArgs.whiteIps" placeholder="（多个IP白名单以英文“,”分割）" class="w-50" />
+          <el-form-item class="w-100" label-width="150px"  label="IP白名单：" prop="whiteIps">
+            <el-input :disabled="isDetail" :rows="4" type="textarea" v-model="modiArgs.step3.whiteIps" placeholder="（多个IP白名单以英文“,”分割）" class="w-50" />
           </el-form-item>
-          <el-form-item class="w-100" label-width="150px"  label="服务器IP白名单：" prop="protocolName">
-            <el-input :rows="4" type="textarea" v-model="modiArgs.serverWhiteIps" placeholder="（多个IP白名单以英文“,”分割）" class="w-50" />
+          <el-form-item class="w-100" label-width="150px"  label="服务器IP白名单：" prop="serverWhiteIps">
+            <el-input :disabled="isDetail" :rows="4" type="textarea" v-model="modiArgs.step3.serverWhiteIps" placeholder="（多个IP白名单以英文“,”分割）" class="w-50" />
           </el-form-item>
 
-          <el-form-item v-if="modiArgs.status == 2" class="w-100" label-width="150px"  label="加扣款接口URL：" prop="protocolName">
-            <el-input v-model="modiArgs.content" placeholder="请输入加扣款接口url" class="w-50" />
+          <el-form-item v-if="modiArgs.status == 2" class="w-100" label-width="150px"  label="加扣款接口URL：" prop="addDeductionUrl">
+            <el-input :disabled="isDetail" v-model="modiArgs.step3.addDeductionUrl" placeholder="请输入加扣款接口url" class="w-50" />
           </el-form-item>
-          <el-form-item v-if="modiArgs.status == 2" class="w-100" label-width="150px"  label="加扣款回调URL：" prop="protocolName">
-            <el-input v-model="modiArgs.content" placeholder="请输入加扣款回调url" class="w-50" />
+          <el-form-item v-if="modiArgs.status == 2" class="w-100" label-width="150px"  label="加扣款回调URL：" prop="addDeductionCallbackUrl">
+            <el-input :disabled="isDetail" v-model="modiArgs.step3.addDeductionCallbackUrl" placeholder="请输入加扣款回调url" class="w-50" />
           </el-form-item>
+          </el-form>
         </div>
 
-      </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
           取消
@@ -302,7 +320,7 @@
           下一步
         </el-button>
 
-        <el-button v-if="active == 2" type="primary" @click="dialogStatus==='create'?createData():updateData()">
+        <el-button v-if="active == 2 && !isDetail" type="primary" @click="dialogStatus == 'update' ? updateData() : createData()">
           保存
         </el-button>
 
@@ -359,7 +377,7 @@ export default {
       header: {
         authorization : localStorage.getItem("token")
       },
-      uploadImg: "",
+
       active: 1,
       listQuery: {
         pageNum: 1,
@@ -372,9 +390,43 @@ export default {
 
       },
       modiArgs: {
-        protocolName: '',
-        status: '',
+        step1 : {
+          merchantCode: '',
+          defaultLanguageType: '',
+          merchantAccount: '', //商户账号
+          merchantPassword: '', //商户密码
+          merchantName: '', //商户名称
+          email: '',
+          merchantContactStr: [ //联系人
+            { name:'',number:''}
+          ], 
+          nation: '', //国家
+          city: '', //市省区
+          address: '', //地址
+        },
+        step2 : {
+          level: '',
+          merchantType: '', //内外部商户 1内 2外
+          settleCurrency: '', //结算币种 1美金2人民币
+          platformRate: '', //平台费率
+          platformCalculateType: '', //计算标准  1 盈利额2投注额
+          platformPaymentType: '', //缴纳周期(平台) 1月 2季度 3半年 4年
+          memberFee: '', //会员费率
+          memberPaymentType: '', //缴纳周期(会员)
+          technologyFee: '', //技术服务费
+          technologyPaymentType: '', //缴纳周期(技术服务费)
+          merchantMaintainer: '', 
+          fileUrl: '',  // 合作协议文件
+        },
+        step3 : {
+          walletType : '', //钱包产品类型. 1 转账 2免转
+          whiteIps : '', //ip白名单
+          serverWhiteIps : '', //ip服务白名单
+          addDeductionUrl : '', //加扣款接口
+          addDeductionCallbackUrl : '', //加扣款回调
+        },
       },
+      
       modiIPArgs: {
         serverWhiteIps : '',
         whiteIps : '',
@@ -383,13 +435,54 @@ export default {
       dialogStatus: '',
       dialogFormVisible: false,
       dialogIPFormVisible: false,
+      isDetail: false,
       isTestId:'',
+      uploadImg:'',
       list: [],
+      contactList:[
+        {
+          name:"merchantContactStr[0].name",
+          number:"merchantContactStr[0].number"
+        },
+        {
+          name:"merchantContactStr[1].name",
+          number:"merchantContactStr[1].number"
+        },
+        {
+          name:"merchantContactStr[2].name",
+          number:"merchantContactStr[2].number"
+        },
+      ],
       total: 0,
       listLoading: true,
-      rules: {
-        protocolName: [{ required: true, message: '必填', trigger: 'blur' }],
-        payAddress: [{ required: true, trigger: 'blur' }],
+      rules1: { //step1
+        "defaultLanguageType": [{ required: true, message: '必填', trigger: 'blur' }],
+        "merchantAccount": [{ required: true, message: '必填', trigger: 'blur' }],
+        "merchantPassword": [{ required: true, message: '必填', trigger: 'blur' }],
+        "merchantName": [{ required: true, message: '必填', trigger: 'blur' }],
+        "email": [{ required: true, message: '必填', trigger: 'blur' }],
+        "merchantContactStr[0].name": [{ required: true, message: '必填', trigger: 'blur' }],
+        "merchantContactStr[0].number": [{ required: true, message: '必填', trigger: 'blur' }],
+        "merchantContactStr[1].name": [{ required: true, message: '必填', trigger: 'blur' }],
+        "merchantContactStr[1].number": [{ required: true, message: '必填', trigger: 'blur' }],
+        "merchantContactStr[2].name": [{ required: true, message: '必填', trigger: 'blur' }],
+        "merchantContactStr[2].number": [{ required: true, message: '必填', trigger: 'blur' }],
+ 
+      },
+      rules2: { //step2
+        "level": [{ required: true, message: '必填', trigger: 'blur' }],
+        "merchantType": [{ required: true, message: '必填', trigger: 'change' }],
+        "settleCurrency": [{ required: true, message: '必填', trigger: 'change' }],
+        "platformRate": [{ required: true, message: '必填', trigger: 'change' }],
+        "platformCalculateType": [{ required: true, message: '必填', trigger: 'change' }],
+        "platformPaymentType": [{ required: true, message: '必填', trigger: 'change' }],
+      },
+      rules3: { //step3
+        "walletType": [{ required: true, message: '必填', trigger: 'change' }],
+        "whiteIps": [{ required: true, message: '必填', trigger: 'blur' }],
+        "serverWhiteIps": [{ required: true, message: '必填', trigger: 'blur' }],
+        "addDeductionUrl": [{ required: true, message: '必填', trigger: 'blur' }],
+        "addDeductionCallbackUrl": [{ required: true, message: '必填', trigger: 'blur' }],
       },
       IPRules: {
         serverWhiteIps: [{ required: true, message: '必填', trigger: 'blur' }],
@@ -398,14 +491,73 @@ export default {
       textMap: {
         update: '编辑',
         create: '新增',
+        detail: '查看',
       },
-      contactInfoList : [1]
+
     }
   },
   created() {
     this.fetchData();
   },
   methods:{
+    test(){
+      alert(1)
+    },
+    createData() {
+      this.$refs.step3DataForm.validate(vaild => {
+        if(vaild) {
+          var newModiArgs = {}
+          this.modiArgs.step1.merchantContactStr = JSON.stringify(this.modiArgs.step1.merchantContactStr)
+          
+          for(var i in this.modiArgs) {
+            for(var j in this.modiArgs[i]) {
+              newModiArgs[j] = this.modiArgs[i][j]
+            }
+          }
+          
+          let args = this.$common.transferToSearchParams(newModiArgs)
+
+          API.addBusinessInfo(args).then(res => {
+            if(res.code == 0) {
+              this.listQuery.pageNum = 1
+              this.fetchData();
+              this.dialogFormVisible = false
+              this.$message.success(res.message)
+            } else {
+              this.$message.error(res.message)
+            }
+          })
+        }
+      })
+    },
+    updateData() {
+      this.$refs.step3DataForm.validate(vaild => {
+        if(vaild) {
+          var newModiArgs = {}
+          this.modiArgs.step1.merchantContactStr = JSON.stringify(this.modiArgs.step1.merchantContactStr)
+          
+          for(var i in this.modiArgs) {
+            for(var j in this.modiArgs[i]) {
+              newModiArgs[j] = this.modiArgs[i][j]
+            }
+          }
+          
+          let args = this.$common.transferToSearchParams(newModiArgs)
+
+          API.updateBusinessInfo(args).then(res => {
+            if(res.code == 0) {
+              this.listQuery.pageNum = 1
+              this.fetchData();
+              this.dialogFormVisible = false
+              this.$message.success(res.message)
+            } else {
+              this.$message.error(res.message)
+            }
+          })
+        }
+      })
+    },
+
     handleIPUpdate(row) {
       let newRow = JSON.parse(JSON.stringify(row))
       this.modiIPArgs.serverWhiteIps = newRow.serverWhiteIps
@@ -432,7 +584,6 @@ export default {
     },
 
     resetPw(row) {
-
       var text = "确定重置密钥吗？一旦操作立即生效";
       this.$confirm(text,"提示", {
         cancelButtonText : "取消",
@@ -512,10 +663,14 @@ export default {
       this.fetchData()
     },
     addContactInfo() {
-      this.contactInfoList.push(1)
+      if(this.modiArgs.step1.merchantContactStr.length >= 3) {
+        this.$message.error("不能大于3个！")
+      } else {
+        this.modiArgs.step1.merchantContactStr.push({name:'',number:''})
+      }
     },
     delContactInfo(k) {
-      this.contactInfoList.splice(k,1)
+      this.modiArgs.step1.merchantContactStr.splice(k,1)
     },
 
     handleAvatarSuccess(res) { // 上传返回
@@ -536,8 +691,9 @@ export default {
         if(res.data.keyList[0].substr(0,1) == '/') {
           res.data.keyList[0] = res.data.keyList[0].substr(1)
         }
-        this.modiArgs.iconKey = res.data.keyList[0]
+
         this.uploadImg = res.data.urlList[0]
+        this.modiArgs.step2.fileUrl = res.data.keyList[0]
       } else {
         this.$message({
           type: 'error',
@@ -553,9 +709,15 @@ export default {
 
     },
     next() {
-      this.active = this.active > 2 ? 2 : ++this.active;
+      let dataFromList = ["step1DataForm","step2DataForm"]
+      let active = this.active
+      this.$refs[dataFromList[active]].validate(valid => {
+        if(valid) {
+          this.active = this.active > 2 ? 2 : ++this.active;
+        }
+      })
 
-
+      
     },
     handleSizeChange(val) {  // 改变列表显示条数
       this.listQuery.pageNum = 1;
@@ -578,12 +740,95 @@ export default {
       this.fetchData()  
     },
 
-    handleUpdate() {
+    handleUpdate(row,isDetail) {
       this.active = 0;
-      this.dialogStatus = 'update'
+      this.dialogStatus = isDetail ? 'detail' : 'update'
+      this.isDetail = isDetail
       this.dialogFormVisible = true
+
+      let args = new URLSearchParams()
+      args.append("id", row.id)
+      console.log(isDetail)
+      API.getBusinessDetail(args).then(res => {
+        this.uploadImg = res.data.showFileUrl
+        this.modiArgs = {
+          step1 : {
+            id: row.id,
+            merchantCode: res.data.merchantInfo.merchantCode,
+            defaultLanguageType: res.data.merchantInfo.defaultLanguageType,
+            merchantAccount: res.data.merchantInfo.merchantAccount, //商户账号
+            merchantPassword: "", //商户密码
+            merchantName: res.data.merchantInfo.merchantName, //商户名称
+            email: res.data.merchantInfo.email,
+            merchantContactStr: JSON.parse(res.data.merchantInfo.merchantContact),
+            nation: res.data.merchantInfo.nation, //国家
+            city: res.data.merchantInfo.city, //市省区
+            address: res.data.merchantInfo.address, //地址
+          },
+          step2 : {
+            level: res.data.merchantDetail.level,
+            merchantType: res.data.merchantDetail.merchantType, //内外部商户 1内 2外
+            settleCurrency: res.data.merchantDetail.settleCurrency, //结算币种 1美金2人民币
+            platformRate: res.data.merchantDetail.platformRate, //平台费率
+            platformCalculateType: res.data.merchantDetail.platformCalculateType, //计算标准  1 盈利额2投注额
+            platformPaymentType: res.data.merchantDetail.platformPaymentType, //缴纳周期(平台) 1月 2季度 3半年 4年
+            memberFee: res.data.merchantDetail.memberFee, //会员费率
+            memberPaymentType: res.data.merchantDetail.memberPaymentType, //缴纳周期(会员)
+            technologyFee: res.data.merchantDetail.technologyFee, //技术服务费
+            technologyPaymentType: res.data.merchantDetail.technologyPaymentType, //缴纳周期(技术服务费)
+            merchantMaintainer: res.data.merchantDetail.merchantMaintainer, 
+            fileUrl: res.data.merchantDetail.fileUrl,  // 合作协议文件
+          },
+          step3 : {
+            walletType :res.data.merchantDetail.walletType, //钱包产品类型. 1 转账 2免转
+            whiteIps : res.data.merchantDetail.whiteIps, //ip白名单
+            serverWhiteIps : res.data.merchantDetail.serverWhiteIps, //ip服务白名单
+            addDeductionUrl : res.data.merchantDetail.addDeductionUrl, //加扣款接口
+            addDeductionCallbackUrl : res.data.merchantDetail.addDeductionCallbackUrl, //加扣款回调
+          },
+        }
+
+      })
+
     },
     handleCreate() { //添加
+      this.modiArgs = {
+        step1 : {
+          merchantCode: '',
+          defaultLanguageType: '',
+          merchantAccount: '', //商户账号
+          merchantPassword: '', //商户密码
+          merchantName: '', //商户名称
+          email: '',
+          merchantContactStr: [ //联系人
+            { name:'',number:''}
+          ], 
+          nation: '', //国家
+          city: '', //市省区
+          address: '', //地址
+        },
+        step2 : {
+          level: '',
+          merchantType: '', //内外部商户 1内 2外
+          settleCurrency: '', //结算币种 1美金2人民币
+          platformRate: '', //平台费率
+          platformCalculateType: '', //计算标准  1 盈利额2投注额
+          platformPaymentType: '', //缴纳周期(平台) 1月 2季度 3半年 4年
+          memberFee: '', //会员费率
+          memberPaymentType: '', //缴纳周期(会员)
+          technologyFee: '', //技术服务费
+          technologyPaymentType: '', //缴纳周期(技术服务费)
+          merchantMaintainer: '', 
+          fileUrl: '',  // 合作协议文件
+        },
+        step3 : {
+          walletType : '', //钱包产品类型. 1 转账 2免转
+          whiteIps : '', //ip白名单
+          serverWhiteIps : '', //ip服务白名单
+          addDeductionUrl : '', //加扣款接口
+          addDeductionCallbackUrl : '', //加扣款回调
+        },
+      }
       this.active = 0;
       this.dialogStatus = 'create'
       this.dialogFormVisible = true

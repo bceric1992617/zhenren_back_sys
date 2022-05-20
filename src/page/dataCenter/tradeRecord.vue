@@ -178,8 +178,10 @@ export default {
 
     handleFilter() { //搜索
       this.listQuery.pageNum = 1
-      this.listQuery.createStartTime = this.listQuery.timeRange[0]
-      this.listQuery.createEndTime = this.listQuery.timeRange[1]
+      if(this.listQuery.timeRange != '') {
+        this.listQuery.createStartTime = this.listQuery.timeRange[0]
+        this.listQuery.createEndTime = this.listQuery.timeRange[1]
+      }
       this.fetchData()
     },
     reset() {
@@ -190,14 +192,22 @@ export default {
 
 
     exprotInfo() {
-      let args = this.$common.transferToSearchParams(this.listQuery)
+      // this.listQuery.pageNum = '';
+      // this.listQuery.pageSize = '';
+      // let args = this.$common.transferToSearchParams(this.listQuery)
 
-      Public.exportChangeRecord(args).then(res => {
-        if(res.code == 0) {
-          this.$message.success(res.message)
-        } else {
-          this.$message.error(res.message)
-        }
+      Public.exportChangeRecord().then(res => {
+        console.log(res,123)
+        const link = document.createElement('a')
+        let blob = new Blob([res], {type:'application/vnd.ms-excel'});
+        var date = new Date();
+        const fileName = "帐变记录导出" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".xls";
+        link.href = URL.createObjectURL(blob)
+        link.download = fileName;
+        document.body.appendChild(link)
+        link.click()
+        URL.revokeObjectURL(link.href); // 释放URL 对象
+        document.body.removeChild(link)
       })
     },
 

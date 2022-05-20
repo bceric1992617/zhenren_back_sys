@@ -70,5 +70,6 @@ const common = {
     currencyList : ["美元", "人民币"],
     calculateList : ["盈利额", "投注额"],
     tradeList : ["转入", "转出", "下注", "结算", "下注取消", "拒单"],
+    tradeSourcesList : ["转入:转账钱包上分成功", "转出:转账钱包下分成功", "下注:下注(减钱)", "结算:结算(加钱)", "下注取消:下注取消(加钱)", "拒单:拒单(加钱)"],
 }
 export default common

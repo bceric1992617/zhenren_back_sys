@@ -118,9 +118,11 @@ ul::-webkit-scrollbar { width: 0 !important }
 
 .m-t-20 {margin-top:20px}
 .m-r-10 {margin-right:10px}
+.m-l-10 {margin-left:10px}
 .p-10 {padding:10px}
 
 .text-14 {font-size: 14px;}
+.text-20 {font-size: 20px;}
 .float-l {float:left}
 .float-r {float:right}
 

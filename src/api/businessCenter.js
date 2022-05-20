@@ -69,7 +69,7 @@ export function resetGoogleKey(datas) {
 
 
 
-export function getBalancePage(datas) {
+export function getBillRecord(datas) {
   return http.request({
     method: "post",
     url: "/merchant/userBet/statistics/balancePage",
@@ -83,13 +83,15 @@ export function getMerchantList(datas) {
     data: datas,
   });
 }
-export function getMerchantUserDetail(datas) {
+export function getUserDetail(datas) {
   return http.request({
     method: "post",
     url: "/merchant/userBet/statistics/merchantUserDetail",
     data: datas,
   });
 }
+
+
 export function getPage(datas) {
   return http.request({
     method: "post",
@@ -97,6 +99,7 @@ export function getPage(datas) {
     data: datas,
   });
 }
+
 
 
 

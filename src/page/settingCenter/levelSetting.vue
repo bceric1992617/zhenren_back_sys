@@ -11,7 +11,7 @@
                 style="width: 100%;"
                 @sort-change="changeSort"
                 border>
-        <el-table-column :label="titleList[0]" align="center"  width="50px">
+        <el-table-column :label="titleList[0]" align="center"  width="70px">
           <template slot-scope="scope">LV{{scope.row.merchantLevel}}</template>
         </el-table-column>
         <el-table-column :label="titleList[1]" align="center">
@@ -40,8 +40,8 @@
         </el-table-column>
         <el-table-column :label="titleList[9]" width="120" align="center" fixed="right">
           <template slot-scope="scope">
-            <el-button type="text" @click="handleUpdate(scope.row)">
-              <i class="el-icon-edit"></i>
+            <el-button class="text-20" type="text" @click="handleUpdate(scope.row)">
+              <i class="el-icon-edit-outline"></i>
             </el-button>
 
           </template>

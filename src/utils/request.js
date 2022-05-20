@@ -36,7 +36,7 @@ const http = {
             }
             resolve(res.data);
         }).catch(error => {
-            Vue.prototype.$message.error("异常错误")
+            Vue.prototype.$message.error("服务异常")
             reject(error);
         })
     }

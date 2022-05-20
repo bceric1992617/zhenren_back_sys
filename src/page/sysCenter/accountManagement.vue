@@ -56,7 +56,7 @@
         <el-table-column label="操作" width="120" align="center" fixed="right">
           <template slot-scope="">
             <el-button type="text" @click="handleUpdate()">
-              <i class="el-icon-edit"></i>
+              <i class="el-icon-edit-outline"></i>
             </el-button>
 
           </template>

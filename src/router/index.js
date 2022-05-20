@@ -48,7 +48,7 @@ export default new Router({
                             }
                         },
                         {
-                            path: 'UserDetail',
+                            path: 'userDetail',
                             component: () => import('../page/business/businessManagement/userDetail.vue'),
                             meta: {
                                 title: '用户查看'

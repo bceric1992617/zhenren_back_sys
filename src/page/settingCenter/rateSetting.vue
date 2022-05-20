@@ -37,8 +37,8 @@
         </el-table-column>
         <el-table-column :label="titleList[8]" width="120" align="center" fixed="right">
           <template slot-scope="scope">
-            <el-button type="text" @click="handleUpdate(scope.row)">
-              <i class="el-icon-edit"></i>
+            <el-button class="text-20" type="text" @click="handleUpdate(scope.row)">
+              <i class="el-icon-edit-outline"></i>
             </el-button>
 
           </template>
