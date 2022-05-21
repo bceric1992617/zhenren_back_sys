@@ -102,7 +102,7 @@ ul::-webkit-scrollbar { width: 0 !important }
 .pagination-container {
     display: inline-block;
     margin: 20px;
-    margin-left: 75%;
+    margin-left: 73%;
 }
 
 /* 测试主体页面的 div 样式 */
@@ -117,12 +117,14 @@ ul::-webkit-scrollbar { width: 0 !important }
 .text-l {text-align: left;}
 
 .m-t-20 {margin-top:20px}
+.m-t-n-5 {margin-top:-5px !important}
 .m-r-10 {margin-right:10px}
 .m-l-10 {margin-left:10px}
 .p-10 {padding:10px}
 
 .text-14 {font-size: 14px;}
 .text-20 {font-size: 20px;}
+.text-24 {font-size: 24px;}
 .float-l {float:left}
 .float-r {float:right}
 
@@ -135,6 +137,16 @@ ul::-webkit-scrollbar { width: 0 !important }
 
 .w-input {width: 45% !important}
 .w-input-30 {width: 30% !important}
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
 
 
 

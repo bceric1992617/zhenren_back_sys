@@ -76,7 +76,7 @@
         </el-table-column>
         <el-table-column :label="titleList[11]" width="120" align="center" fixed="right">
           <template slot-scope="scope">
-            <el-button type="text" @click="$router.push({ path: 'userDetail', query: {rowId : scope.row.id, userId : scope.row.userId , merchantId : scope.row.merchantId} })">
+            <el-button class="text-20" type="text" @click="$router.push({ path: 'userDetail', query: {rowId : scope.row.id, userId : scope.row.userId , merchantId : scope.row.merchantId} })">
               <i class="el-icon-search"></i>
             </el-button>
 

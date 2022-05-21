@@ -140,10 +140,19 @@ export default {
       ],
       rules: {
         platformRateType: [{ required: true, message: '必填', trigger: 'blur' }],
-        platformRate: [{ required: true, message: '必填', trigger: 'blur' }],
+        platformRate: [
+          { required: true, message: '必填', trigger: 'blur' },
+          { pattern: /^\d*?\.{1}\d+$/, message: "只能输入小数,不能小于0", trigger: 'blur'}
+        ],
         platformPaymentType: [{ required: true, message: '必填', trigger: 'change' }],
-        amountRangeMax: [{ required: true, message: '必填', trigger: 'blur' }],
-        amountRangeMin: [{ required: true, message: '必填', trigger: 'blur' }],
+        amountRangeMax: [
+          { required: true, message: '必填', trigger: 'blur' },
+          { pattern: /^\d*?\.?\d*?$/, message: "只能输入数字,不能小于0", trigger: 'blur'}
+        ],
+        amountRangeMin: [
+          { required: true, message: '必填', trigger: 'blur' },
+          { pattern: /^\d*?\.?\d*?$/, message: "只能输入数字,不能小于0", trigger: 'blur'}
+        ],
       },
       modiArgs: {
         amountRangeMax: '',

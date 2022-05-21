@@ -95,7 +95,7 @@
             <el-option v-for="(item,k) in $common.paymentType" :key="k" :label="item" :value="k + 1"/>
           </el-select>
         </el-form-item>
-        <el-form-item class="float-l w-input-30" label-width="150px"  label="会员费(USD)：">
+        <el-form-item class="float-l w-input-30" label-width="150px"  label="会员费(USD)：" prop="memberFee">
           <el-input  v-model="modiArgs.memberFee" placeholder="请输入会员费"   />
         </el-form-item>
         <el-form-item class="float-l w-input-30" label-width="130px"  label="缴纳周期：" >
@@ -105,7 +105,7 @@
         </el-form-item>
         <el-form-item class="float-l  w-input-30" style="height:40px">
         </el-form-item>
-        <el-form-item class="float-l w-input-30" label-width="150px"  label="技术服务费(USD)：">
+        <el-form-item class="float-l w-input-30" label-width="150px"  label="技术服务费(USD)："  prop="technologyFee">
           <el-input  v-model="modiArgs.technologyFee" placeholder="请输入技术服务费"   />
         </el-form-item>
         <el-form-item class="float-l w-input-30" label-width="130px"  label="缴纳周期：" >
@@ -191,10 +191,22 @@ export default {
       total: 0,
       listLoading: true,
       rules: {
-        merchantLevel: [{ required: true, message: '必填', trigger: 'change' }],
-        platformRate: [{ required: true, message: '必填', trigger: 'blur' }],
+        merchantLevel: [
+          { required: true, message: '必填', trigger: 'blur' },
+          { pattern: /^[0-9]*$/, message: "只能输入数字,不能小于0", trigger: 'blur'}
+        ],
+        platformRate: [
+          { required: true, message: '必填', trigger: 'blur' },
+          { pattern: /^\d*?\.{1}\d+$/, message: "只能输入小数,不能小于0", trigger: 'blur'}
+          ],
         platformRateType: [{ required: true, message: '必填', trigger: 'change' }],
         platformPaymentType: [{ required: true, message: '必填', trigger: 'change' }],
+        memberFee: [
+            { pattern: /^\d*?\.?\d*?$/, message: "只能输入数字,不能小于0", trigger: 'blur'}
+        ],
+        technologyFee: [
+            { pattern: /^\d*?\.?\d*?$/, message: "只能输入数字,不能小于0", trigger: 'blur'}
+        ]
       },
 
 

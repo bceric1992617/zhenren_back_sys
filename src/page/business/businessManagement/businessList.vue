@@ -133,7 +133,7 @@
         <div v-if="active  == 0">
           <el-form class="m-t-20 w-100 float-l" ref="step1DataForm" :rules="rules1" :model="modiArgs.step1" label-position="right">
           
-          <el-form-item v-if="dialogStatus != 'create'" class="float-l w-input" label-width="130px"  label="商户编号：" prop="merchantAccount">
+          <el-form-item v-if="dialogStatus != 'create'" class="float-l w-input" label-width="130px"  label="商户编号：">
             <el-input disabled v-model="modiArgs.step1.merchantCode" placeholder="请输入商户编号"  />
           </el-form-item>
           <el-form-item class="float-l w-input" label-width="130px"  label="C端默认语言：" prop="defaultLanguageType">
@@ -142,11 +142,14 @@
             </el-select>
           </el-form-item>
           <el-form-item class="float-l w-input" label-width="130px"  label="商户账号：" prop="merchantAccount">
-            <el-input :disabled="isDetail" v-model="modiArgs.step1.merchantAccount" placeholder="请输入商户账号"  />
+            <el-input :disabled="dialogStatus == 'create' ? '' : 'disable'" v-model="modiArgs.step1.merchantAccount" placeholder="字母+数字组合 6-12"  />
           </el-form-item>
 
-          <el-form-item class="float-l w-input" label-width="130px"  label="商户密码：" :prop=" dialogStatus == 'create' ? 'merchantPassword' : ''">
-            <el-input :disabled="isDetail" v-model="modiArgs.step1.merchantPassword" placeholder="请输入商户密码"  />
+          <el-form-item v-if="dialogStatus == 'create'" class="float-l w-input" label-width="130px"  label="商户密码：" prop="merchantPassword">
+            <el-input :disabled="isDetail" v-model="modiArgs.step1.merchantPassword" placeholder="字母+数字组合 8-12"  />
+          </el-form-item>
+          <el-form-item v-else class="float-l w-input" label-width="130px"  label="商户密码：" prop="merchantPasswordUpdate">
+            <el-input :disabled="isDetail" v-model="modiArgs.step1.merchantPasswordUpdate" placeholder="字母+数字组合 8-12"  />
           </el-form-item>
           <el-form-item class="float-l w-input" label-width="130px"  label="商户名称：" prop="merchantName">
             <el-input :disabled="isDetail" v-model="modiArgs.step1.merchantName" placeholder="请输入商户名称"  />
@@ -166,14 +169,14 @@
               <el-input :disabled="isDetail" v-model="item.number" placeholder="请输入商务方式"  />
             </el-form-item>
           <div v-if="!isDetail">
-            <p v-if="k == 0" @click="addContactInfo" class="float-l m-l-10" > 
-              <el-button type="text" class="text-20">
-                <i class="el-icon-plus"></i>  
+            <p v-if="k == 0" @click="addContactInfo" class="float-l m-l-10 m-t-n-5"  > 
+              <el-button type="text" class="text-24"  >
+                <i class="el-icon-circle-plus-outline"></i>  
               </el-button>
             </p>
-            <p v-else @click="delContactInfo(k)" class="float-l m-l-10"> 
-              <el-button type="text" class="text-20">
-                <i class="el-icon-close"></i>    
+            <p v-else @click="delContactInfo(k)" class="float-l m-l-10 m-t-n-5"> 
+              <el-button type="text" class="text-24">
+                <i class="el-icon-remove-outline"></i>    
               </el-button>
             </p>
             </div>
@@ -209,7 +212,7 @@
           </el-form-item>
 
           <el-form-item class="float-l w-input-30" label-width="130px"  label="平台费率(%)：" prop="platformRate">
-            <el-input :disabled="isDetail" v-model="modiArgs.step2.platformRate" placeholder="请输入平台费率" type="number"  />
+            <el-input :disabled="isDetail" v-model="modiArgs.step2.platformRate" placeholder="请输入平台费率"  />
           </el-form-item>
           <el-form-item class="float-l w-input-30" label-width="130px"  label="计算标准：" prop="platformCalculateType">
             <el-select :disabled="isDetail" class="w-100" v-model="modiArgs.step2.platformCalculateType"  clearable placeholder="请选择计算标准">
@@ -222,10 +225,10 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item class="float-l w-input-30" label-width="130px"  label="会员费：">
+          <el-form-item class="float-l w-input-30" label-width="130px"  label="会员费：" prop="memberFee">
             <el-input :disabled="isDetail" v-model="modiArgs.step2.memberFee" placeholder="请输入会员费"/>
           </el-form-item>
-          <el-form-item class="float-l  w-input-30" label-width="130px"  label="缴纳周期：">
+          <el-form-item class="float-l  w-input-30" label-width="130px"  label="缴纳周期：" prop="paymentType">
             <el-select :disabled="isDetail" class="w-100" v-model="modiArgs.step2.memberPaymentType"  clearable placeholder="请选择缴纳周期">
               <el-option v-for="(item,k) in $common.paymentType" :key="k" :label="item" :value="k + 1"/>
             </el-select>
@@ -233,7 +236,7 @@
           <el-form-item class="float-l  w-input-30" style="height:40px">
           </el-form-item>
 
-          <el-form-item class="float-l w-input-30" label-width="130px"  label="技术服务费：">
+          <el-form-item class="float-l w-input-30" label-width="130px"  label="技术服务费：" prop="technologyFee">
             <el-input :disabled="isDetail" v-model="modiArgs.step2.technologyFee" placeholder="请输入技术服务费"   />
           </el-form-item>
           <el-form-item class="float-l w-input-30" label-width="130px"  label="缴纳周期：">
@@ -297,10 +300,10 @@
             <el-input :disabled="isDetail" :rows="4" type="textarea" v-model="modiArgs.step3.serverWhiteIps" placeholder="（多个IP白名单以英文“,”分割）" class="w-50" />
           </el-form-item>
 
-          <el-form-item v-if="modiArgs.status == 2" class="w-100" label-width="150px"  label="加扣款接口URL：" prop="addDeductionUrl">
+          <el-form-item v-if="modiArgs.step3.walletType == 2" class="w-100" label-width="150px"  label="加扣款接口URL：" prop="addDeductionUrl">
             <el-input :disabled="isDetail" v-model="modiArgs.step3.addDeductionUrl" placeholder="请输入加扣款接口url" class="w-50" />
           </el-form-item>
-          <el-form-item v-if="modiArgs.status == 2" class="w-100" label-width="150px"  label="加扣款回调URL：" prop="addDeductionCallbackUrl">
+          <el-form-item v-if="modiArgs.step3.walletType == 2" class="w-100" label-width="150px"  label="加扣款回调URL：" prop="addDeductionCallbackUrl">
             <el-input :disabled="isDetail" v-model="modiArgs.step3.addDeductionCallbackUrl" placeholder="请输入加扣款回调url" class="w-50" />
           </el-form-item>
           </el-form>
@@ -378,7 +381,7 @@ export default {
         authorization : localStorage.getItem("token")
       },
 
-      active: 1,
+      active: 0,
       listQuery: {
         pageNum: 1,
         pageSize: this.$common.defaultPage,
@@ -395,6 +398,7 @@ export default {
           defaultLanguageType: '',
           merchantAccount: '', //商户账号
           merchantPassword: '', //商户密码
+          merchantPasswordUpdate: '', 
           merchantName: '', //商户名称
           email: '',
           merchantContactStr: [ //联系人
@@ -457,8 +461,18 @@ export default {
       listLoading: true,
       rules1: { //step1
         "defaultLanguageType": [{ required: true, message: '必填', trigger: 'blur' }],
-        "merchantAccount": [{ required: true, message: '必填', trigger: 'blur' }],
-        "merchantPassword": [{ required: true, message: '必填', trigger: 'blur' }],
+        "merchantAccount": [
+          { required: true, message: '必填', trigger: 'blur' },
+          { pattern: /(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{6,12}/, message: '字母+数字组合 6-12', trigger: 'blur' },
+        ],
+        "merchantPassword": [
+          { required: true, message: '必填', trigger: 'blur' },
+          { pattern: /(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,12}/, message: '字母+数字组合 8-12', trigger: 'blur' },
+        ],
+        "merchantPasswordUpdate": [
+          { pattern: /(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,12}/, message: '字母+数字组合 8-12', trigger: 'blur' },
+        ],
+
         "merchantName": [{ required: true, message: '必填', trigger: 'blur' }],
         "email": [{ required: true, message: '必填', trigger: 'blur' }],
         "merchantContactStr[0].name": [{ required: true, message: '必填', trigger: 'blur' }],
@@ -470,23 +484,53 @@ export default {
  
       },
       rules2: { //step2
-        "level": [{ required: true, message: '必填', trigger: 'blur' }],
+        "level": [
+          { required: true, message: '必填', trigger: 'blur' },
+          { pattern: /^[0-9]*$/, message: "只能输入数字,不能小于0", trigger: 'blur'}
+        ],
         "merchantType": [{ required: true, message: '必填', trigger: 'change' }],
         "settleCurrency": [{ required: true, message: '必填', trigger: 'change' }],
-        "platformRate": [{ required: true, message: '必填', trigger: 'change' }],
+        "platformRate": [
+          { required: true, message: '必填', trigger: 'change' },
+          { pattern: /^\d*?\.{1}\d+$/, message: "只能输入小数,不能小于0", trigger: 'blur'}
+        ],
         "platformCalculateType": [{ required: true, message: '必填', trigger: 'change' }],
         "platformPaymentType": [{ required: true, message: '必填', trigger: 'change' }],
+        "memberFee": [
+            { pattern: /^\d*?\.?\d*?$/, message: "只能输入数字,不能小于0", trigger: 'blur'}
+        ],
+        "technologyFee": [
+            { pattern: /^\d*?\.?\d*?$/, message: "只能输入数字,不能小于0", trigger: 'blur'}
+        ],
       },
       rules3: { //step3
         "walletType": [{ required: true, message: '必填', trigger: 'change' }],
-        "whiteIps": [{ required: true, message: '必填', trigger: 'blur' }],
-        "serverWhiteIps": [{ required: true, message: '必填', trigger: 'blur' }],
-        "addDeductionUrl": [{ required: true, message: '必填', trigger: 'blur' }],
-        "addDeductionCallbackUrl": [{ required: true, message: '必填', trigger: 'blur' }],
+        "whiteIps": [
+          { required: true, message: '必填', trigger: 'blur' },
+          { pattern: /^(\,{0,}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}){1,}$/, message: "请输入正确IP和逗号隔开", trigger: 'blur'}
+        ],
+        "serverWhiteIps": [
+          { required: true, message: '必填', trigger: 'blur' },
+          { pattern: /^(\,{0,}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}){1,}$/, message: "请输入正确IP和逗号隔开", trigger: 'blur'}
+        ],
+        "addDeductionUrl": [
+          { required: true, message: '必填', trigger: 'blur' },
+          { pattern: /[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/, message: "请输入正确的url", trigger: 'blur'}
+        ],
+        "addDeductionCallbackUrl": [
+          { required: true, message: '必填', trigger: 'blur' },
+          { pattern: /[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/, message: "请输入正确的url", trigger: 'blur'}
+        ],
       },
       IPRules: {
-        serverWhiteIps: [{ required: true, message: '必填', trigger: 'blur' }],
-        whiteIps: [{ required: true, message: '必填', trigger: 'blur' }],
+        serverWhiteIps: [
+          { required: true, message: '必填', trigger: 'blur' },
+          { pattern: /^(\,{0,}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}){1,}$/, message: "请输入正确IP和逗号隔开", trigger: 'blur'}
+        ],
+        whiteIps: [
+          { required: true, message: '必填', trigger: 'blur' },
+          { pattern: /^(\,{0,}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}){1,}$/, message: "请输入正确IP和逗号隔开", trigger: 'blur'}
+        ],
       },
       textMap: {
         update: '编辑',
@@ -500,9 +544,7 @@ export default {
     this.fetchData();
   },
   methods:{
-    test(){
-      alert(1)
-    },
+
     createData() {
       this.$refs.step3DataForm.validate(vaild => {
         if(vaild) {
@@ -533,6 +575,8 @@ export default {
     updateData() {
       this.$refs.step3DataForm.validate(vaild => {
         if(vaild) {
+          this.modiArgs.step1.merchantPassword = this.modiArgs.step1.merchantPasswordUpdate
+
           var newModiArgs = {}
           this.modiArgs.step1.merchantContactStr = JSON.stringify(this.modiArgs.step1.merchantContactStr)
           
@@ -748,7 +792,7 @@ export default {
 
       let args = new URLSearchParams()
       args.append("id", row.id)
-      console.log(isDetail)
+
       API.getBusinessDetail(args).then(res => {
         this.uploadImg = res.data.showFileUrl
         this.modiArgs = {
@@ -832,6 +876,7 @@ export default {
       this.active = 0;
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
+      this.isDetail = false
     },
 
 
