@@ -7,7 +7,12 @@
             <p>PLAYS中控管理</p>
         </div>
         <div class="ms-login">
-            <div class="ms-title">真人视讯</div>
+            <div class="ms-title">
+                <p>
+                    <img src="@/assets/img/publicPics/logoBlue.png" alt="">
+                </p>
+                <p>PLAYS中控管理</p>
+            </div>
             <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
                 <el-form-item prop="userName">
                     <el-input v-model="param.userName" placeholder="输入账号">
@@ -232,8 +237,21 @@ export default {
 .ms-title {
     width: 100%;
     text-align: center;
-    font-size: 22px;
+    font-size: 16px;
+    font-weight: 600;
     margin: 25px 0px 15px;
+
+}
+.ms-title p {
+    display: inline-block;
+    margin-right:10px;
+}
+
+.ms-title img {
+    width:50px;
+    height:50px;
+    vertical-align: middle;
+
 }
 .ms-login {
     position: relative;
