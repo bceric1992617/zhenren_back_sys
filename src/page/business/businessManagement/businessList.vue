@@ -55,23 +55,61 @@
                 <el-option v-for="(item,k) in $common.isTest" :key="k" :label="item" :value="k"/>
               </el-select>
             </div>
-            <div v-else @click.stop="isTestId = scope.row.id">
-              {{ $common.isTest[scope.row.isTest] }}
-              <el-button type="text">
-                <i class="el-icon-edit-outline"></i>
-              </el-button>
-            </div>
+            <el-tooltip v-else content="点击编辑" placement="bottom">
+              <div  @click.stop="isTestId = scope.row.id">
+                {{ $common.isTest[scope.row.isTest] }}
+                <el-button type="text">
+                  <i class="el-icon-edit-outline"></i>
+                </el-button>
+              </div>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column :label="titleList[7]" align="center">
           <template slot-scope="scope">{{ $common.langeType[scope.row.defaultLanguageType - 1]}}</template>
         </el-table-column>
+
         <el-table-column :label="titleList[8]" align="center">
-          <template slot-scope="scope"> {{ JSON.parse(scope.row.merchantContact)[0].name }}</template>
+          <template slot-scope="scope"> 
+              <el-popover
+                v-if="JSON.parse(scope.row.merchantContact).length > 1"
+                placement="bottom"
+                title="商务联系人"
+                width="200"
+                trigger="click"
+                :content="nameStr">
+                <div slot="reference" @click="setNameContent(scope.row)">
+                  {{ JSON.parse(scope.row.merchantContact)[0].name }}
+                  <el-button type="text">
+                    <i class="el-icon-search"></i>
+                  </el-button>
+                </div>
+              </el-popover>
+              <span v-else>{{ JSON.parse(scope.row.merchantContact)[0].name }}</span>
+          </template>
         </el-table-column>
-        <el-table-column :label="titleList[9]" align="center">
-          <template slot-scope="scope"> {{ JSON.parse(scope.row.merchantContact)[0].number }}</template>
+        <el-table-column :label="titleList[9]" align="center" width="130px">
+          <template slot-scope="scope"> 
+            <el-popover
+              v-if="JSON.parse(scope.row.merchantContact).length > 1"
+              placement="bottom"
+              title="联系方式"
+              width="200"
+              trigger="click"
+              :content="numberStr">
+            <el-tooltip content="点击查看" placement="bottom">
+              <div slot="reference" @click="setContactContent(scope.row)">
+                {{ JSON.parse(scope.row.merchantContact)[0].number }}
+                <el-button type="text">
+                  <i class="el-icon-search"></i>
+                </el-button>
+              </div>
+            </el-tooltip>
+            </el-popover>
+            <span v-else>{{ JSON.parse(scope.row.merchantContact)[0].number }}</span>
+          </template>
         </el-table-column>
+        
         <el-table-column :label="titleList[10]" align="center">
           <template slot-scope="scope">{{scope.row.merchantMaintainer}}</template>
         </el-table-column>
@@ -80,28 +118,38 @@
         </el-table-column>
         <el-table-column :label="titleList[12]" align="center">
           <template @click="test" slot-scope="scope">
-            <div @click="changeStatus(scope.row)">
-              {{ $common.statusType[scope.row.status - 1 ]}}
-              <el-button type="text">
-                <i class="el-icon-edit-outline"></i>
-              </el-button>
-            </div>
+            <el-tooltip content="点击编辑" placement="bottom">
+              <div @click="changeStatus(scope.row)">
+                {{ $common.statusType[scope.row.status - 1 ]}}
+                <el-button type="text">
+                  <i class="el-icon-edit-outline"></i>
+                </el-button>
+              </div>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column :label="titleList[13]" width="140" align="center" fixed="right">
           <template slot-scope="scope">
-            <el-button class="text-20" type="text" @click="handleUpdate(scope.row,false)">
-              <i class="el-icon-edit-outline"></i>
-            </el-button>
-            <el-button class="text-20" type="text" @click="handleUpdate(scope.row,true)">
-              <i class="el-icon-search"></i>
-            </el-button>
-            <el-button class="text-20" type="text" @click="handleIPUpdate(scope.row)">
-              <i class="el-icon-location-outline"></i>
-            </el-button>
-            <el-button class="text-20" type="text" @click="resetPw(scope.row)">
-              <i class="el-icon-key"></i>
-            </el-button>
+            <el-tooltip content="编辑" placement="bottom">
+              <el-button class="text-20" type="text" @click="handleUpdate(scope.row,false)">
+                <i class="el-icon-edit-outline"></i>
+              </el-button>
+            </el-tooltip>
+            <el-tooltip content="查看" placement="bottom">
+              <el-button class="text-20" type="text" @click="handleUpdate(scope.row,true)">
+                <i class="el-icon-search"></i>
+              </el-button>
+            </el-tooltip>
+            <el-tooltip content="编辑IP白名单" placement="bottom">
+              <el-button class="text-20" type="text" @click="handleIPUpdate(scope.row)">
+                <i class="el-icon-location-outline"></i>
+              </el-button>
+            </el-tooltip>
+            <el-tooltip content="重置密钥" placement="bottom">
+              <el-button class="text-20" type="text" @click="resetPw(scope.row)">
+                <i class="el-icon-key"></i>
+              </el-button>
+            </el-tooltip>
 
 
           </template>
@@ -137,12 +185,12 @@
             <el-input disabled v-model="modiArgs.step1.merchantCode" placeholder="请输入商户编号"  />
           </el-form-item>
           <el-form-item class="float-l w-input" label-width="130px"  label="C端默认语言：" prop="defaultLanguageType">
-            <el-select :disabled="isDetail" class="w-100" v-model="modiArgs.step1.defaultLanguageType" >
+            <el-select :disabled="isDetail" class="w-100" v-model="modiArgs.step1.defaultLanguageType" placeholder="请选择C端默认语言">
               <el-option v-for="(item,k) in $common.langeType" :key="k" :label="item" :value="k + 1"/>
             </el-select>
           </el-form-item>
           <el-form-item class="float-l w-input" label-width="130px"  label="商户账号：" prop="merchantAccount">
-            <el-input :disabled="dialogStatus == 'create' ? '' : 'disable'" v-model="modiArgs.step1.merchantAccount" placeholder="字母+数字组合 6-12"  />
+            <el-input :disabled="dialogStatus == 'create' ? false : true" v-model="modiArgs.step1.merchantAccount" placeholder="字母+数字组合 6-12"  />
           </el-form-item>
 
           <el-form-item v-if="dialogStatus == 'create'" class="float-l w-input" label-width="130px"  label="商户密码：" prop="merchantPassword">
@@ -442,6 +490,8 @@ export default {
       isDetail: false,
       isTestId:'',
       uploadImg:'',
+      nameStr:'',
+      numberStr:'',
       list: [],
       contactList:[
         {
@@ -507,11 +557,11 @@ export default {
         "walletType": [{ required: true, message: '必填', trigger: 'change' }],
         "whiteIps": [
           { required: true, message: '必填', trigger: 'blur' },
-          { pattern: /^(\,{0,}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}){1,}$/, message: "请输入正确IP和逗号隔开", trigger: 'blur'}
+          { pattern: /^(\,{0,}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}){1,}$/, message: "请输入正确IP和英文逗号隔开", trigger: 'blur'}
         ],
         "serverWhiteIps": [
           { required: true, message: '必填', trigger: 'blur' },
-          { pattern: /^(\,{0,}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}){1,}$/, message: "请输入正确IP和逗号隔开", trigger: 'blur'}
+          { pattern: /^(\,{0,}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}){1,}$/, message: "请输入正确IP和英文逗号隔开", trigger: 'blur'}
         ],
         "addDeductionUrl": [
           { required: true, message: '必填', trigger: 'blur' },
@@ -525,11 +575,11 @@ export default {
       IPRules: {
         serverWhiteIps: [
           { required: true, message: '必填', trigger: 'blur' },
-          { pattern: /^(\,{0,}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}){1,}$/, message: "请输入正确IP和逗号隔开", trigger: 'blur'}
+          { pattern: /^(\,{0,}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}){1,}$/, message: "请输入正确IP和英文逗号隔开", trigger: 'blur'}
         ],
         whiteIps: [
           { required: true, message: '必填', trigger: 'blur' },
-          { pattern: /^(\,{0,}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}){1,}$/, message: "请输入正确IP和逗号隔开", trigger: 'blur'}
+          { pattern: /^(\,{0,}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}){1,}$/, message: "请输入正确IP和英文逗号隔开", trigger: 'blur'}
         ],
       },
       textMap: {
@@ -544,7 +594,24 @@ export default {
     this.fetchData();
   },
   methods:{
+    setNameContent(row) {
+      var merchantContactList = JSON.parse(row.merchantContact)
 
+      var nameStr = ""
+      for(var i in merchantContactList) {
+        nameStr += "," + merchantContactList[i].name
+      }
+      this.nameStr = nameStr.slice(1)
+    },
+    setContactContent(row) {
+      var merchantContactList = JSON.parse(row.merchantContact)
+
+      var nameStr = ""
+      for(var i in merchantContactList) {
+        nameStr += "," + merchantContactList[i].number
+      }
+      this.numberStr = nameStr.slice(1)
+    },
     createData() {
       this.$refs.step3DataForm.validate(vaild => {
         if(vaild) {
@@ -785,6 +852,11 @@ export default {
     },
 
     handleUpdate(row,isDetail) {
+      this.$nextTick(() => {
+        this.$refs.step1DataForm.clearValidate()
+        this.$refs.step2DataForm.clearValidate()
+        this.$refs.step3DataForm.clearValidate()
+      })
       this.active = 0;
       this.dialogStatus = isDetail ? 'detail' : 'update'
       this.isDetail = isDetail
@@ -836,6 +908,12 @@ export default {
 
     },
     handleCreate() { //添加
+        this.$nextTick(() => {
+          this.$refs.step1DataForm.clearValidate()
+          this.$refs.step2DataForm.clearValidate()
+          this.$refs.step3DataForm.clearValidate()
+        })
+
       this.modiArgs = {
         step1 : {
           merchantCode: '',

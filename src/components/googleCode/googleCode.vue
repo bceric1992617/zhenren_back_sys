@@ -9,7 +9,7 @@
                 <div class="googleContent">Google安全码验证</div>
                 <div class="notice">请输入6位数安全码</div>
 
-                <div class="input-content" @keydown="keydown" @keyup="keyup" @paste="paste" @mousewheel="mousewheel" @input="inputEvent">
+                <div class="input-content" @keydown="keydown" @keyup="keyup"  @input="inputEvent">
                     <input maxlength="1" data-index="0" v-model.trim.number="input[0]" ref="firstinput"/>
                     <input maxlength="1" data-index="1" v-model.trim.number="input[1]"/>
                     <input maxlength="1" data-index="2" v-model.trim.number="input[2]"/>
@@ -45,7 +45,7 @@ export default {
         dialogFormVisible : false,
         btnStatus : false,
         pasteResult: [],
-        userName: "",
+        // userName: "",
         // id: 0,
         input: []
       };
@@ -59,7 +59,7 @@ export default {
       }
     },
     mounted() {
-
+      this.input = [];
     },
     methods: {
         googleCheck() {
@@ -69,12 +69,12 @@ export default {
           
           API.verifyGoogleCode(args).then(res => {
               if(res.code == 0) {
-                  this.$router.push("/")
-                  localStorage.setItem('ms_username', this.userName);
-                  localStorage.setItem('token', "Bearer " + res.data.token);
-                  this.$message.success(res.message)
+                localStorage.setItem('ms_username', this.userName);
+                localStorage.setItem('token', "Bearer " + res.data.token);
+                this.$router.push("/")
+                this.$message.success(res.message)
               } else {
-                  this.$message.error(res.message)
+                this.$message.error(res.message)
               }
           })
         },
@@ -149,33 +149,33 @@ export default {
           }
         }
       },
-      mousewheel(e) {
-        var index = e.target.dataset.index;
-        if (e.wheelDelta > 0) {
-          if (this.input[index] * 1 < 9) {
-            this.$set(this.input, index, (this.input[index] * 1 + 1).toString());
-          }
-        } else if (e.wheelDelta < 0) {
-          if (this.input[index] * 1 > 0) {
-            this.$set(this.input, index, (this.input[index] * 1 - 1).toString());
-          }
-        } else if (e.key === 'Enter') {
-          if (this.input.join('').length === 6) {
-            document.activeElement.blur();
-            this.$emit('complete', this.input);
-          }
-        }
-      },
-      paste(e) {
-        // 当进行粘贴时
-        e.clipboardData.items[0].getAsString(str => {
-          if (str.toString().length === 6) {
-            this.pasteResult = str.split('');
-            document.activeElement.blur();
-            this.$emit('complete', this.input);
-          }
-        })
-      }
+      // mousewheel(e) {
+      //   var index = e.target.dataset.index;
+      //   if (e.wheelDelta > 0) {
+      //     if (this.input[index] * 1 < 9) {
+      //       this.$set(this.input, index, (this.input[index] * 1 + 1).toString());
+      //     }
+      //   } else if (e.wheelDelta < 0) {
+      //     if (this.input[index] * 1 > 0) {
+      //       this.$set(this.input, index, (this.input[index] * 1 - 1).toString());
+      //     }
+      //   } else if (e.key === 'Enter') {
+      //     if (this.input.join('').length === 6) {
+      //       document.activeElement.blur();
+      //       this.$emit('complete', this.input);
+      //     }
+      //   }
+      // },
+      // paste(e) {
+      //   // 当进行粘贴时
+      //   e.clipboardData.items[0].getAsString(str => {
+      //     if (str.toString().length === 6) {
+      //       this.pasteResult = str.split('');
+      //       document.activeElement.blur();
+      //       this.$emit('complete', this.input);
+      //     }
+      //   })
+      // }
     },
 
 

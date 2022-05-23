@@ -40,9 +40,11 @@
         </el-table-column>
         <el-table-column :label="titleList[9]" width="120" align="center" fixed="right">
           <template slot-scope="scope">
-            <el-button class="text-20" type="text" @click="handleUpdate(scope.row)">
-              <i class="el-icon-edit-outline"></i>
-            </el-button>
+            <el-tooltip content="编辑" placement="bottom">
+              <el-button class="text-20" type="text" @click="handleUpdate(scope.row)">
+                <i class="el-icon-edit-outline"></i>
+              </el-button>
+            </el-tooltip>
 
           </template>
         </el-table-column>
@@ -78,7 +80,7 @@
         <el-form-item class="float-l  w-input-30" style="height:40px">
         </el-form-item>
         <el-form-item class="float-l w-input-30 rate" label-width="150px" label="平台费率(%)：" prop="platformRate">
-          <el-input  @click.stop.native="showStatus = true" v-model="modiArgs.platformRate" placeholder="请输入平台费率" type="number" step="0.01" />
+          <el-input @click.stop.native="showStatus = true" v-model="modiArgs.platformRate" placeholder="请输入平台费率" type="number" step="0.01" />
           <p class="w-100" v-if="showStatus && rateList.length > 0" >
             <ul>
               <li v-for="v,k in rateList" :key="k" @click.stop="changeRate(v)" >{{ v.platformRate }}%</li>
@@ -226,6 +228,9 @@ export default {
       this.modiArgs.platformPaymentType = v.platformPaymentType
       this.modiArgs.amountRangeMax = v.amountRangeMax
       this.modiArgs.amountRangeMin = v.amountRangeMin
+      this.$nextTick(() => {
+        this.$refs.dataForm.clearValidate()
+      })
 
     },
     changeSort(column) { //上架时间排序
@@ -274,6 +279,9 @@ export default {
     },
 
     handleCreate() { //添加
+      this.$nextTick(() => {
+        this.$refs.dataForm.clearValidate()
+      })
       this.modiArgs = {
         amountRangeMax: '',
         amountRangeMin: '',
@@ -291,7 +299,10 @@ export default {
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
     },
-    handleUpdate(row) { //添加
+    handleUpdate(row) { 
+      this.$nextTick(() => {
+        this.$refs.dataForm.clearValidate()
+      })
       let newRow = JSON.parse(JSON.stringify(row))
       this.modiArgs = newRow
       this.modiArgs.operate = 2 //编辑

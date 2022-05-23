@@ -44,10 +44,10 @@
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
         <el-table-column :label="titleList[1]" align="center">
-          <template slot-scope="scope">{{scope.row.userId}}</template>
+          <template slot-scope="scope">{{scope.row.username}}</template>
         </el-table-column>
         <el-table-column :label="titleList[2]" align="center">
-          <template slot-scope="scope">{{scope.row.merchantCode}}_{{scope.row.username}}</template>
+          <template slot-scope="scope">{{scope.row.nickname}}</template>
         </el-table-column>
         <el-table-column :label="titleList[3]" align="center">
           <template slot-scope="scope">{{scope.row.merchantName}}</template>
@@ -76,9 +76,11 @@
         </el-table-column>
         <el-table-column :label="titleList[11]" width="120" align="center" fixed="right">
           <template slot-scope="scope">
-            <el-button class="text-20" type="text" @click="$router.push({ path: 'userDetail', query: {rowId : scope.row.id, userId : scope.row.userId , merchantId : scope.row.merchantId} })">
-              <i class="el-icon-search"></i>
-            </el-button>
+            <el-tooltip content="查看" placement="bottom">
+              <el-button class="text-20" type="text" @click="$router.push({ path: 'userDetail', query: {rowId : scope.row.id, userId : scope.row.userId , merchantId : scope.row.merchantId} })">
+                <i class="el-icon-search"></i>
+              </el-button>
+            </el-tooltip>
 
           </template>
         </el-table-column>

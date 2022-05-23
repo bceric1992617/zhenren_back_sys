@@ -192,12 +192,12 @@ export default {
 
 
     exprotInfo() {
-      // this.listQuery.pageNum = '';
-      // this.listQuery.pageSize = '';
-      // let args = this.$common.transferToSearchParams(this.listQuery)
+      this.listLoading = true
+      this.listQuery.pageNum = '';
+      this.listQuery.pageSize = '';
+      let args = this.$common.transferToSearchParams(this.listQuery)
 
-      Public.exportChangeRecord().then(res => {
-        console.log(res,123)
+      Public.exportChangeRecord(args).then(res => {
         const link = document.createElement('a')
         let blob = new Blob([res], {type:'application/vnd.ms-excel'});
         var date = new Date();
@@ -208,6 +208,7 @@ export default {
         link.click()
         URL.revokeObjectURL(link.href); // 释放URL 对象
         document.body.removeChild(link)
+        this.listLoading = false
       })
     },
 

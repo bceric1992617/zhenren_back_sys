@@ -80,6 +80,8 @@ export default {
                 password: '123321'
             },
             rules: {
+                userName: [{ required: true, message: '必填', trigger: 'blur' }],
+                password: [{ required: true, message: '必填', trigger: 'blur' }],
                 confirmPassword: [{ required: true, message: '必填', trigger: 'blur' }],
                 googleCode: [{ required: true, message: '必填', trigger: 'blur' }],
                 googleKey: [{ required: true, message: '必填', trigger: 'blur' }],
@@ -122,9 +124,10 @@ export default {
 
                     API.firstEnter(args).then(res => {
                         if(res.code == 0) {
-                            this.$router.push("/")
                             localStorage.setItem('ms_username', this.param.userName);
                             localStorage.setItem('token', "Bearer " + res.data.token);
+                            this.$router.push("/")
+
                             this.$message.success(res.message)
                         } else {
                             this.$message.error(res.message)
@@ -155,7 +158,6 @@ export default {
                                     this.setPWForm = true
                                 } else {
                                     this.$refs.googleCode.dialogFormVisible = true
-                                    this.$refs.googleCode.input = []
                                 }
                             } else {
                                 localStorage.setItem('ms_username', this.param.userName);

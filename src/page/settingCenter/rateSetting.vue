@@ -37,9 +37,11 @@
         </el-table-column>
         <el-table-column :label="titleList[8]" width="120" align="center" fixed="right">
           <template slot-scope="scope">
-            <el-button class="text-20" type="text" @click="handleUpdate(scope.row)">
-              <i class="el-icon-edit-outline"></i>
-            </el-button>
+            <el-tooltip content="编辑" placement="bottom">
+              <el-button class="text-20" type="text" @click="handleUpdate(scope.row)">
+                <i class="el-icon-edit-outline"></i>
+              </el-button>
+            </el-tooltip>
 
           </template>
         </el-table-column>
@@ -191,6 +193,9 @@ export default {
   },
   methods:{
     handleUpdate(row) { //添加
+      this.$nextTick(() => {
+        this.$refs.dataForm.clearValidate()
+      })
       let newRow = JSON.parse(JSON.stringify(row))
       this.modiArgs = newRow
       this.modiArgs.operate = 2 //编辑
@@ -201,10 +206,14 @@ export default {
     changeRate(v) {
       this.showStatus = false
       this.modiArgs.platformRate = v.platformRate
+      this.$nextTick(() => {
+        this.$refs.dataForm.clearValidate()
+      })
       // this.modiArgs.platformRateType = v.platformRateType
       // this.modiArgs.platformPaymentType = v.platformPaymentType
       // this.modiArgs.amountRangeMax = v.amountRangeMax
       // this.modiArgs.amountRangeMin = v.amountRangeMin
+
     },
     getRateList() {
       Public.getAllPlatformRate().then(res => {
@@ -236,6 +245,9 @@ export default {
     },
 
     handleCreate() { //添加
+      this.$nextTick(() => {
+        this.$refs.dataForm.clearValidate()
+      })
       this.modiArgs = {
         amountRangeMax: '',
         amountRangeMin: '',

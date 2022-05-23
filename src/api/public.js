@@ -10,12 +10,12 @@ export function getAllPlatformRate(datas) {
 }
 
 
-export function exportChangeRecord() {
+export function exportChangeRecord(datas) {
   return http.request({
     method: "post",
     url: "/export/exportChangeRecord",
     responseType : 'blob',
 
-    // data: datas,
+    data: datas,
   });
 }
