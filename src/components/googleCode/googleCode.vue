@@ -18,11 +18,11 @@
                     <input maxlength="1" data-index="5" v-model.trim.number="input[5]"/>
                 </div>
                 <div >
-                    <p v-if="btnStatus" class="loginBtn btnEnable googleCodeBtn" @click="googleCheck"> 
-                        <b>登录</b>
+                    <p v-if="btnStatus" class="loginBtn btnEnable googleCodeBtn" @click="sendCode"> 
+                        <b>确定</b>
                     </p>
                     <p v-else class="loginBtn btnDisable googleCodeBtn" > 
-                        <b>登录</b>
+                        <b>确定</b>
                     </p>
                 </div>
 
@@ -36,7 +36,7 @@
 
 
 <script>
-import * as API from '@/api/login'
+
 export default {
     data() {
       return {
@@ -45,39 +45,28 @@ export default {
         dialogFormVisible : false,
         btnStatus : false,
         pasteResult: [],
-        // userName: "",
-        // id: 0,
         input: []
       };
     },
-    props: ['userName','id'],
+
     computed: {
       input() {
-        // code 是父组件传进来的默认值，必须是6位长度的数组，这里就不再做容错判断处理
         // 最后空数组是默认值
         return this.code || this.pasteResult.length === 6 ? this.pasteResult : ['', '', '', '', '', '']
       }
     },
     mounted() {
-      this.input = [];
+
+    },
+    updated() {
+      if(this.dialogFormVisible) {
+        this.input = []
+      }
     },
     methods: {
-        googleCheck() {
-          let args = new URLSearchParams()
-          args.append('id', this.id)
-          args.append('googleCode', this.input[0] + this.input[1] + this.input[2] + this.input[3] + this.input[4] + this.input[5])
-          
-          API.verifyGoogleCode(args).then(res => {
-              if(res.code == 0) {
-                localStorage.setItem('ms_username', this.userName);
-                localStorage.setItem('token', "Bearer " + res.data.token);
-                this.$router.push("/")
-                this.$message.success(res.message)
-              } else {
-                this.$message.error(res.message)
-              }
-          })
-        },
+      sendCode() {
+        this.$emit("myevent",this.input[0] + this.input[1] + this.input[2] + this.input[3] + this.input[4] + this.input[5])
+      },
 
       // 解决一个输入框输入多个字符
       inputEvent(e) {
@@ -149,33 +138,7 @@ export default {
           }
         }
       },
-      // mousewheel(e) {
-      //   var index = e.target.dataset.index;
-      //   if (e.wheelDelta > 0) {
-      //     if (this.input[index] * 1 < 9) {
-      //       this.$set(this.input, index, (this.input[index] * 1 + 1).toString());
-      //     }
-      //   } else if (e.wheelDelta < 0) {
-      //     if (this.input[index] * 1 > 0) {
-      //       this.$set(this.input, index, (this.input[index] * 1 - 1).toString());
-      //     }
-      //   } else if (e.key === 'Enter') {
-      //     if (this.input.join('').length === 6) {
-      //       document.activeElement.blur();
-      //       this.$emit('complete', this.input);
-      //     }
-      //   }
-      // },
-      // paste(e) {
-      //   // 当进行粘贴时
-      //   e.clipboardData.items[0].getAsString(str => {
-      //     if (str.toString().length === 6) {
-      //       this.pasteResult = str.split('');
-      //       document.activeElement.blur();
-      //       this.$emit('complete', this.input);
-      //     }
-      //   })
-      // }
+
     },
 
 
@@ -258,7 +221,7 @@ input::-webkit-inner-spin-button {
     background: url('../../assets/img/publicPics/googleTitleBg.png');
     background-repeat:no-repeat;
     background-size:100% 15px;
-
+    background-position: 0 -1px;
 }
 
 /deep/ .el-dialog { 

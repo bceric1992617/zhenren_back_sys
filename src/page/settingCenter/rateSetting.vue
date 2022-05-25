@@ -224,8 +224,8 @@ export default {
 
     changeSort(column) { 
       this.listQuery.amountRangeBy = ""
-      this.listQuery.platformPaymentTypeBy = ""
       this.listQuery.platformRateBy = ""
+      this.listQuery.platformPaymentTypeBy = ""
 
       var args = {
         "descending" : "desc",
@@ -235,9 +235,9 @@ export default {
       if(column.column.label == this.titleList[2]) {
         this.listQuery.amountRangeBy = args[column.order]
       } else if(column.column.label == this.titleList[3]) {
-        this.listQuery.platformPaymentTypeBy = args[column.order]
-      } else if(column.column.label == this.titleList[4]) {
         this.listQuery.platformRateBy = args[column.order]
+      } else if(column.column.label == this.titleList[4]) {
+        this.listQuery.platformPaymentTypeBy = args[column.order] 
       }
 
       this.listQuery.pageNum = 1

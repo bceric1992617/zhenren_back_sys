@@ -13,7 +13,7 @@ import echarts from 'echarts';
 import './assets/css/main.css';
 import 'babel-polyfill';
 import common from '@/utils/common'
-
+import googleCode from '@/components/googleCode/googleCode'
 
 
 
@@ -28,6 +28,7 @@ Vue.prototype.$common = common
 Vue.use(VueResource);
 Vue.use(ElementUI);
 Vue.use(ViewUI);
+Vue.component('googleCode',googleCode);
 Vue.prototype.$echarts = echarts;
 
 Vue.config.productionTip = false;

@@ -156,6 +156,7 @@
           <el-input :rows="4" type="textarea" v-model="modiArgs.remark" placeholder="请输入备注" class="w-50" />
         </el-form-item>
 
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -279,7 +280,6 @@ export default {
   methods:{
     receiveCode(code) {
         this.modiArgs.googleCode = code
-        this.getRoleName()
         let args = this.$common.transferToSearchParams(this.modiArgs)
 
         API.addAndEditAdmin(args).then(res => {
@@ -287,21 +287,11 @@ export default {
             this.listQuery.pageNum = 1
             this.fetchData();
             this.dialogFormVisible = false
-            this.$refs.googleCode.dialogFormVisible = false
             this.$message.success(res.message)
-
           } else {
             this.$message.error(res.message)
           }
         })
-    },
-
-    getRoleName() {
-      for(var i in this.roleList) {
-        if(this.roleList[i].id == this.modiArgs.roleId) {
-          this.modiArgs.roleName = this.roleList[i].roleName
-        }
-      }
     },
 
     createData() {
@@ -417,8 +407,6 @@ export default {
       var nowRow = JSON.parse(JSON.stringify(row))
       this.modiArgs  = nowRow
       this.modiArgs.operate = 2
-      this.modiArgs.id = row.id
-      
       console.log(this.modiArgs)
     },
 

@@ -161,11 +161,12 @@ export default {
         update: '编辑',
         create: '新增',
       },
-      contactInfoList : [1]
+
     }
   },
   created() {
     this.fetchData();
+    this.getBusinessInfo();
   },
   methods:{
     changeSort(column) {
@@ -219,7 +220,11 @@ export default {
       this.fetchData()  
     },
 
-
+    getBusinessInfo() {
+      API.getMerchantList().then(res => {
+        this.businessList = res.data
+      })
+    },
     fetchData() {
       this.listLoading = true
       let args = this.$common.transferToSearchParams(this.listQuery)

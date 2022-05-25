@@ -55,7 +55,7 @@
                 <el-option v-for="(item,k) in $common.isTest" :key="k" :label="item" :value="k"/>
               </el-select>
             </div>
-            <el-tooltip v-else content="点击编辑" placement="bottom">
+            <el-tooltip v-else content="编辑" placement="bottom">
               <div  @click.stop="isTestId = scope.row.id">
                 {{ $common.isTest[scope.row.isTest] }}
                 <el-button type="text">
@@ -97,7 +97,7 @@
               width="200"
               trigger="click"
               :content="numberStr">
-            <el-tooltip content="点击查看" placement="bottom">
+            <el-tooltip content="查看" placement="bottom">
               <div slot="reference" @click="setContactContent(scope.row)">
                 {{ JSON.parse(scope.row.merchantContact)[0].number }}
                 <el-button type="text">
@@ -117,8 +117,8 @@
           <template slot-scope="scope">{{scope.row.createTime}}</template>
         </el-table-column>
         <el-table-column :label="titleList[12]" align="center">
-          <template @click="test" slot-scope="scope">
-            <el-tooltip content="点击编辑" placement="bottom">
+          <template slot-scope="scope">
+            <el-tooltip content="编辑" placement="bottom">
               <div @click="changeStatus(scope.row)">
                 {{ $common.statusType[scope.row.status - 1 ]}}
                 <el-button type="text">
@@ -150,8 +150,6 @@
                 <i class="el-icon-key"></i>
               </el-button>
             </el-tooltip>
-
-
           </template>
         </el-table-column>
       </el-table>
@@ -766,7 +764,7 @@ export default {
 
       if(column.column.label == this.titleList[4]) {
         this.listQuery.levelSort = args[column.order]
-      } else if(column.column.label == this.titleList[10]) {
+      } else if(column.column.label == this.titleList[11]) {
         this.listQuery.createTimeSort = args[column.order]
       }
       
@@ -842,7 +840,7 @@ export default {
 
 
     handleFilter() { //搜索
-      this.listQuery.page = 1
+      this.listQuery.pageNum = 1
       this.fetchData()
     },
     reset() {

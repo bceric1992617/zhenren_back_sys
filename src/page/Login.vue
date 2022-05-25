@@ -1,11 +1,11 @@
 <template>
     <div class="login-wrap">
-        <div class="top">
+        <!-- <div class="top">
             <p>
                 <img src="@/assets/img/publicPics/logoWhite.png" alt="">
             </p>
             <p>PLAYS中控管理</p>
-        </div>
+        </div> -->
         <div class="ms-login">
             <div class="ms-title">
                 <p>
@@ -62,7 +62,7 @@
             </div>
         </el-dialog>
 
-        <googleCode ref="googleCode" v-bind:userName="param.userName" v-bind:id="modiArgs.id"></googleCode>
+        <googleCode ref="googleCode" @myevent="receiveCode"></googleCode>
 
     </div>
 </template>
@@ -70,19 +70,17 @@
 <script>
 import * as API from '@/api/login'
 import md5 from 'js-md5';
-import googleCode from '@/components/googleCode/googleCode'
+
 
 export default {
-    components: {
-        googleCode
-    },
+
     data: function() {
         return {
             keyStatus: false,
             setPWForm: false,
             param: {
                 userName: 'baicai',
-                password: '123321'
+                password: '123456'
             },
             rules: {
                 userName: [{ required: true, message: '必填', trigger: 'blur' }],
@@ -106,6 +104,25 @@ export default {
 
     },
     methods: {
+        receiveCode(code) {
+            console.log(code)
+
+            let args = new URLSearchParams()
+            args.append('id', this.modiArgs.id)
+            args.append('googleCode', code)
+            
+            API.verifyGoogleCode(args).then(res => {
+                if(res.code == 0) {
+                localStorage.setItem('ms_username', this.param.userName);
+                localStorage.setItem('token', "Bearer " + res.data.token);
+                this.$router.push("/")
+                this.$message.success(res.message)
+                } else {
+                this.$message.error(res.message)
+                }
+            })
+        },
+
         getGoogleKey() {
             API.generateGoogleKey().then(res => {
                 if(res.code == 0) {
@@ -211,7 +228,8 @@ export default {
     height: 100%; 
     /* background-size:100% 100%; */
     background: url('../assets/img/publicPics/bg.png');
-    /* background-repeat:no-repeat; */
+    background-repeat:no-repeat;
+    background-position: 0 -1px
 }
 
 .top img {
@@ -258,7 +276,7 @@ export default {
     width: 450px;
     height: 335px;
     max-width: 90%;
-    margin: 150px auto;
+    margin: 250px auto;
     border-radius: 5px;
     background: white;
     overflow: hidden;
