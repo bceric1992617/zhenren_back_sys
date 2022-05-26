@@ -20,7 +20,7 @@
       <el-button  class="filter-item" type="primary" @click="handleFilter">
         查询
       </el-button>
-      <el-button  class="filter-item" @click="reset">
+      <el-button  class="filter-item" @click="$common.resetArgs(listQuery);fetchData()">
         重置
       </el-button>
 
@@ -121,6 +121,7 @@ export default {
     }
   },
   created() {
+    this.$common.getCurrencyList()
     this.fetchData();
   },
   methods:{
@@ -139,11 +140,6 @@ export default {
     handleFilter() { //搜索
       this.listQuery.page = 1
       this.fetchData()
-    },
-    reset() {
-      this.$common.resetArgs(this.listQuery)
-      this.listQuery.pageNum = 1
-      this.fetchData()  
     },
 
 

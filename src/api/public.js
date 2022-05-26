@@ -1,13 +1,7 @@
 import { http } from "@/utils/request";
 
 
-export function getAllPlatformRate(datas) {
-  return http.request({
-    method: "post",
-    url: "/settingCenter/getAllPlatformRate",
-    data: datas
-  });
-}
+
 
 
 export function exportChangeRecord(datas) {
@@ -17,5 +11,21 @@ export function exportChangeRecord(datas) {
     responseType : 'blob',
 
     data: datas,
+  });
+}
+
+export function getCurrency() {
+  return http.request({
+    method: "post",
+    url: "/common/currencyList",
+
+  });
+}
+
+export function getRuleName() {
+  return http.request({
+    method: "post",
+    url: "/bet/order/game/ruleNameList",
+
   });
 }

@@ -35,7 +35,7 @@
         <el-table-column :label="titleList[7]" align="center">
           <template slot-scope="scope">{{scope.row.updateTime}}</template>
         </el-table-column>
-        <el-table-column :label="titleList[8]" width="120" align="center" fixed="right">
+        <el-table-column :label="titleList[8]" width="100" align="center" fixed="right">
           <template slot-scope="scope">
             <el-tooltip content="编辑" placement="bottom">
               <el-button class="text-20" type="text" @click="handleUpdate(scope.row)">
@@ -209,10 +209,7 @@ export default {
       this.$nextTick(() => {
         this.$refs.dataForm.clearValidate()
       })
-      // this.modiArgs.platformRateType = v.platformRateType
-      // this.modiArgs.platformPaymentType = v.platformPaymentType
-      // this.modiArgs.amountRangeMax = v.amountRangeMax
-      // this.modiArgs.amountRangeMin = v.amountRangeMin
+
 
     },
     getRateList() {

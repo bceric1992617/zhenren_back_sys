@@ -101,8 +101,9 @@ ul::-webkit-scrollbar { width: 0 !important }
 /* 分页栏样式 */
 .pagination-container {
     display: inline-block;
-    margin: 20px;
+    margin-top: 20px;
     margin-left: 73%;
+
 }
 
 /* 测试主体页面的 div 样式 */
@@ -112,15 +113,28 @@ ul::-webkit-scrollbar { width: 0 !important }
 
 
 /* DIY */
+.b-1-0 {border:1px solid #000; margin-top:10px}
+.b-br-1-EBEEF5 {border-bottom:1px solid #EBEEF5; border-right:1px solid #EBEEF5;}
+
+
+.b-b-1-EBEEF5 {border-bottom:1px solid #EBEEF5;}
+.b-l-1-EBEEF5 {border-left:1px solid #EBEEF5;}
+.b-t-1-EBEEF5 {border-top:1px solid #EBEEF5;}
+
+
 .text-r {text-align: right;}
 .text-c {text-align: center;}
 .text-l {text-align: left;}
 
+.m-t-8 {margin-top:8px}
+.m-t-10 {margin-top:10px}
 .m-t-20 {margin-top:20px}
+.m-t-50 {margin-top:50px}
 .m-t-n-5 {margin-top:-5px !important}
 .m-r-10 {margin-right:10px}
 .m-l-10 {margin-left:10px}
 .p-10 {padding:10px}
+.p-0-10 {padding:0 10px}
 
 .text-14 {font-size: 14px;}
 .text-20 {font-size: 20px;}
@@ -197,3 +211,5 @@ input[type="number"] {
 .btnEnable {
     background-image: linear-gradient(to right, #2B3A57, #73C5E6);
 }
+
+

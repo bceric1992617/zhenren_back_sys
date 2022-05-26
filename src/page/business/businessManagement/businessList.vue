@@ -17,7 +17,7 @@
       <el-button  class="filter-item" type="primary" @click="handleFilter">
         查询
       </el-button>
-      <el-button  class="filter-item" @click="reset">
+      <el-button  class="filter-item" @click="$common.resetArgs(listQuery);fetchData()">
         重置
       </el-button>
       <el-button class="filter-item" type="primary" @click="handleCreate">
@@ -843,11 +843,7 @@ export default {
       this.listQuery.pageNum = 1
       this.fetchData()
     },
-    reset() {
-      this.$common.resetArgs(this.listQuery)
-      this.listQuery.pageNum = 1
-      this.fetchData()  
-    },
+
 
     handleUpdate(row,isDetail) {
       this.$nextTick(() => {

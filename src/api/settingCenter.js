@@ -34,3 +34,5 @@ export function addRate(datas) {
 
 
 
+
+

@@ -105,8 +105,6 @@ export default {
     },
     methods: {
         receiveCode(code) {
-            console.log(code)
-
             let args = new URLSearchParams()
             args.append('id', this.modiArgs.id)
             args.append('googleCode', code)
@@ -194,6 +192,8 @@ export default {
                 }
             });
         }
+
+        
     }
 };
 </script>

@@ -20,7 +20,7 @@
         </el-form-item>
         <el-form-item label="币种：">
             <el-select class="w-100" v-model="listQuery.settleCurrency"  placeholder="请输入币种">
-              <el-option v-for="(item,k) in $common.currencyList" :key="k" :label="item" :value="k + 1"/>
+              <el-option v-for="(item,k) in $common.currencyList" :key="k" :label="item" :value="k"/>
             </el-select>
         </el-form-item>
 
@@ -29,7 +29,7 @@
       <el-button  class="filter-item" type="primary" @click="handleFilter">
         查询
       </el-button>
-      <el-button  class="filter-item" @click="reset">
+      <el-button  class="filter-item" @click="$common.resetArgs(listQuery);fetchData()">
         重置
       </el-button>
 
@@ -53,7 +53,7 @@
           <template slot-scope="scope">{{scope.row.merchantName}}</template>
         </el-table-column>
         <el-table-column :label="titleList[4]" align="center">
-          <template slot-scope="scope">{{$common.currencyList[scope.row.settleCurrency - 1]}}</template>
+          <template slot-scope="scope">{{$common.currencyList[scope.row.settleCurrency]}}</template>
         </el-table-column>
         <el-table-column :label="titleList[5]" align="center" sortable>
           <template slot-scope="scope">{{scope.row.balance}}</template>
@@ -165,6 +165,7 @@ export default {
     }
   },
   created() {
+    this.$common.getCurrencyList()
     this.fetchData();
     this.getBusinessInfo();
   },
@@ -214,11 +215,7 @@ export default {
       this.listQuery.pageNum = 1
       this.fetchData()
     },
-    reset() {
-      this.$common.resetArgs(this.listQuery)
-      this.listQuery.pageNum = 1
-      this.fetchData()  
-    },
+
 
     getBusinessInfo() {
       API.getMerchantList().then(res => {

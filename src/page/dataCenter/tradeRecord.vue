@@ -19,7 +19,7 @@
         </el-form-item>
 
         <el-form-item label="注单号：">
-          <el-input v-model="listQuery.relationId" placeholder="请输入注单号" class="filter-item"  />
+          <el-input v-model="listQuery.relationId" placeholder="请  输入注单号" class="filter-item"  />
         </el-form-item>
         <el-form-item label="用户ID/用户名：">
           <el-input v-model="listQuery.userUnique" placeholder="请输入用户ID/用户名" class="filter-item"  />
@@ -35,7 +35,7 @@
       <el-button  class="filter-item" type="primary" @click="handleFilter">
         查询
       </el-button>
-      <el-button  class="filter-item" @click="reset">
+      <el-button  class="filter-item" @click="$common.resetArgs(listQuery);fetchData()">
         重置
       </el-button>
       <el-button  class="filter-item" @click="exprotInfo">
@@ -107,7 +107,6 @@
 
 <script>
 import * as API from '@/api/dataCenter'
-import * as Public from '@/api/public'
 
 export default {
 
@@ -184,11 +183,6 @@ export default {
       }
       this.fetchData()
     },
-    reset() {
-      this.$common.resetArgs(this.listQuery)
-      this.listQuery.pageNum = 1
-      this.fetchData()  
-    },
 
 
     exprotInfo() {
@@ -197,7 +191,7 @@ export default {
       this.listQuery.pageSize = '';
       let args = this.$common.transferToSearchParams(this.listQuery)
 
-      Public.exportChangeRecord(args).then(res => {
+      API.exportChangeRecord(args).then(res => {
         const link = document.createElement('a')
         let blob = new Blob([res], {type:'application/vnd.ms-excel'});
         var date = new Date();
