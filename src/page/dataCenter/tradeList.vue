@@ -1,21 +1,43 @@
 <template>
 <div class="content-box">
   <div class="container">
+
+
       <el-form :inline="true" :model="listQuery" class="demo-form-inline">
-        <el-form-item label="用户ID/用户名：">
-          <el-input v-model="listQuery.protocolName" placeholder="请输入用户ID/用户名" class="filter-item"  />
+        <el-form-item label="交易单号：">
+          <el-input v-model="listQuery.ordernum" placeholder="请输入交易单号" class="filter-item"  />
         </el-form-item>
-        <el-form-item label="商户名称：">
-          <el-input v-model="listQuery.protocolName" placeholder="请输入或选择商户名称" class="filter-item"  />
-        </el-form-item>
-        <el-form-item label="币种：">
-            <el-select class="w-100" v-model="listQuery.status"  clearable>
-              <el-option v-for="(item,k) in $common.currencyList" :key="k" :label="item" :value="k + 1"/>
+        <el-form-item label="交易对象：">
+            <el-select v-model="listQuery.type" placeholder="请输入交易对象">
+              <el-option v-for="(item,k) in $common.tradeList" :key="k" :label="item" :value="k + 1"/>
             </el-select>
         </el-form-item>
+        <el-form-item label="交易类型：">
+            <el-select v-model="listQuery.type" placeholder="请输入交易类型">
+              <el-option v-for="(item,k) in $common.tradeList" :key="k" :label="item" :value="k + 1"/>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="关联注单号：">
+          <el-input v-model="listQuery.ordernum" placeholder="请输入关联注单号" class="filter-item"  />
+        </el-form-item>
+        <el-form-item label="用户名：">
+          <el-input v-model="listQuery.ordernum" placeholder="请输入用户名" class="filter-item"  />
+        </el-form-item>
+        <el-form-item label="用户ID：">
+          <el-input v-model="listQuery.ordernum" placeholder="请输入用户ID" class="filter-item"  />
+        </el-form-item>
 
-
-      
+        <el-form-item label="交易时间：">
+          <el-date-picker
+          v-model="listQuery.timeRange"
+          type="datetimerange"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          >
+          </el-date-picker>
+        </el-form-item>
+        
       </el-form>
       <el-button  class="filter-item" type="primary" @click="handleFilter">
         查询
@@ -29,48 +51,41 @@
       <el-table ref="Table1"
                 :data="list"
                 style="width: 100%;"
+                @sort-change="changeSort"
                 border>
-        <el-table-column label="序号" align="center"  width="50px">
+        <el-table-column :label="titleList[0]" align="center"  width="80px">
           <template slot-scope="scope">{{scope.row.userName}}</template>
         </el-table-column>
-        <el-table-column label="用户ID" align="center">
+        <el-table-column :label="titleList[1]" align="center">
           <template slot-scope="scope">{{scope.row.sex}}</template>
         </el-table-column>
-        <el-table-column label="用户名" align="center">
+        <el-table-column :label="titleList[2]" align="center">
           <template slot-scope="scope">{{scope.row.age}}</template>
         </el-table-column>
-        <el-table-column label="所属商户" align="center">
+        <el-table-column :label="titleList[3]" align="center" sortable>
           <template slot-scope="scope">{{scope.row.nation}}</template>
         </el-table-column>
-        <el-table-column label="币种" align="center">
+        <el-table-column :label="titleList[4]" align="center">
           <template slot-scope="scope">{{scope.row.education}}</template>
         </el-table-column>
-        <el-table-column label="可用余额" align="center">
+        <el-table-column :label="titleList[5]" align="center" sortable>
           <template slot-scope="scope">{{scope.row.education}}</template>
         </el-table-column>
-        <el-table-column label="累计投注额" align="center">
+        <el-table-column :label="titleList[6]" align="center">
           <template slot-scope="scope">{{scope.row.education}}</template>
         </el-table-column>
-        <el-table-column label="累计盈亏" align="center">
+        <el-table-column :label="titleList[7]" align="center" sortable>
           <template slot-scope="scope">{{scope.row.education}}</template>
         </el-table-column>
-        <el-table-column label="注单数量" align="center">
+        <el-table-column :label="titleList[8]" align="center">
           <template slot-scope="scope">{{scope.row.education}}</template>
         </el-table-column>
-        <el-table-column label="最后投注时间" align="center">
-          <template slot-scope="scope">{{scope.row.education}}</template>
-        </el-table-column>
-        <el-table-column label="最后登录时间" align="center">
+        <el-table-column :label="titleList[9]" align="center">
           <template slot-scope="scope">{{scope.row.education}}</template>
         </el-table-column>
 
-        <el-table-column label="操作" width="120" align="center" fixed="right">
-          <template slot-scope="">
-            <el-button type="text" @click="handleUpdate()">
-              <i class="el-icon-edit-outline"></i>
-            </el-button>
-          </template>
-        </el-table-column>
+
+
       </el-table>
     </div>
 
@@ -102,14 +117,25 @@ export default {
 
   data(){
     return{
-
+      titleList:[
+        '交易单号',
+        '交易对象商户',
+        '用户名',
+        '用户ID',
+        '币种',
+        '交易金额',
+        '交易类型',
+        '交易时间',
+        '交易状态',
+        '关联注单号',
+      ],
 
 
       listQuery: {
         pageNum: 1,
         pageSize: this.$common.defaultPage,
-        protocolName: "",
-        timerange : ''
+        ordernum: "",
+        type : ''
       },
 
       dialogStatus: '',
@@ -121,11 +147,47 @@ export default {
     }
   },
   created() {
-    this.$common.getCurrencyList()
     this.fetchData();
   },
   methods:{
+    changeSort(column) { //上架时间排序
+      this.listQuery.usernameSort = ""
+      this.listQuery.betTimeSort = ""
+      this.listQuery.winAmountSort = ""
 
+      var args = {
+        "descending" : "desc",
+        "ascending" : "asc",
+      }
+
+      if(column.column.label == this.titleList[2]) {
+        this.listQuery.usernameSort = args[column.order]
+      } else if(column.column.label == this.titleList[11]) {
+        this.listQuery.betTimeSort = args[column.order]
+      } else if(column.column.label == this.titleList[13]) {
+        this.listQuery.winAmountSort = args[column.order]
+      }
+      
+      this.listQuery.pageNum = 1
+      this.fetchData()
+    },
+
+
+    changeSort(column) { //上架时间排序
+      this.listQuery.usernameSort = ""
+
+      var args = {
+        "descending" : "desc",
+        "ascending" : "asc",
+      }
+
+      if(column.column.label == this.titleList[0]) {
+        this.listQuery.usernameSort = args[column.order]
+      }
+      
+      this.listQuery.pageNum = 1
+      this.fetchData()
+    },
     handleSizeChange(val) {  // 改变列表显示条数
       this.listQuery.pageNum = 1;
       this.listQuery.pageSize = val;

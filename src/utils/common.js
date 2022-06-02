@@ -2,8 +2,32 @@ import { Message } from 'element-ui'
 import { getCurrency, getRuleName } from '@/api/public'
 
 const common = {
+
+    //美元转换其他币种
+    exchangeUSDToOther(num,currencyCode) {
+        if(num == 0) {
+            return 0
+        }
+        
+        var usdRate, otherRate = 0
+        common.getOriginCurrencyList();
+
+        for(var i in common.currencyOriginList) {
+
+            if(common.currencyOriginList[i].id == 1) {
+                usdRate = common.currencyOriginList[i].currencyValue
+            }
+            
+            if(common.currencyOriginList[i].currencyCode == currencyCode) {
+                otherRate = common.currencyOriginList[i].currencyValue
+            }
+        }
+ 
+        return ((num / usdRate) * otherRate).toFixed(2)
+    },
+
     getRuleNameList: async () => {
-        if(!common.isSet(localStorage.getItem('ruleNameList'))) {
+        if(!common.isSet(sessionStorage.getItem('ruleNameList'))) {
             var newData = {
                     all : '全部'
             }
@@ -12,24 +36,36 @@ const common = {
                     newData[res.data[i].id] = res.data[i].ruleName
                 }
                 
-                localStorage.setItem('ruleNameList', JSON.stringify(newData))
+                sessionStorage.setItem('ruleNameList', JSON.stringify(newData))
             })
         }
-        common.ruleNameList = JSON.parse(localStorage.getItem('ruleNameList'))
+        common.ruleNameList = JSON.parse(sessionStorage.getItem('ruleNameList'))
 
     },
+
+    getOriginCurrencyList: async () => {
+        if(1 || !common.isSet(sessionStorage.getItem('currencyOriginList'))) {
+            await getCurrency().then(res => {
+                sessionStorage.setItem('currencyOriginList', JSON.stringify(res.data))
+            })
+        }
+        common.currencyOriginList = JSON.parse(sessionStorage.getItem('currencyOriginList'))
+    },
+
     getCurrencyList: async () => {
-        if(!common.isSet(localStorage.getItem('currencyList'))) {
+        if(!common.isSet(sessionStorage.getItem('currencyList'))) {
             var newData = {}
             await getCurrency().then(res => {
                 for(var i in res.data) {
                     newData[res.data[i].id] = res.data[i].currencyName
                 }
-                localStorage.setItem('currencyList', JSON.stringify(newData))
+                sessionStorage.setItem('currencyList', JSON.stringify(newData))
             })
         }
-        common.currencyList = JSON.parse(localStorage.getItem('currencyList'))
+        common.currencyList = JSON.parse(sessionStorage.getItem('currencyList'))
     },
+
+
 
 
     resetArgs : (list) => { //清空参数
@@ -62,6 +98,7 @@ const common = {
         return args
     },
 
+    //上传验证
     beforeAvatarUpload : (file) => {
         if (file.type != 'image/jpeg' && file.type != 'image/jpg' && file.type != 'image/png') {
             Message.error('上传头像图片只能是 jpg,jpeg,png 格式!')
@@ -72,6 +109,8 @@ const common = {
             return false
         }
     },
+
+    //复制
     copyFn: (text) => {
         if(text == '') {
             Message.error('请先填写内容')
@@ -92,6 +131,7 @@ const common = {
     defaultPage: 20,
     ruleNameList : [],
     currencyList : [],
+    currencyOriginList : [],
     statusType : ["启用", "禁用"],
     isTest : ["正式商户", "测试商户"],
     langeType : ["简体中文", "英文"],

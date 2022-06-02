@@ -85,6 +85,27 @@ export default new Router({
                                 title: '账变记录'
                             }
                         },
+                        {
+                            path: 'registerStatistics',
+                            component: () => import('../page/dataCenter/registerStatistics.vue'),
+                            meta: {
+                                title: '商户注单统计'
+                            }
+                        },
+                        {
+                            path: 'userStatistics',
+                            component: () => import('../page/dataCenter/userStatistics.vue'),
+                            meta: {
+                                title: '用户投注统计'
+                            }
+                        },
+                        {
+                            path: 'tableRecordList',
+                            component: () => import('../page/dataCenter/tableRecordList.vue'),
+                            meta: {
+                                title: '桌局记录查询'
+                            }
+                        },
                     ]
                 },
 

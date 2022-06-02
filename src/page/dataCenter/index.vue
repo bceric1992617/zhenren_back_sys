@@ -31,6 +31,18 @@ export default {
                     index: 'tradeRecord',
                     title: '账变记录'
                 },
+                {
+                    index: 'registerStatistics',
+                    title: '商户注单统计'
+                },
+                {
+                    index: 'userStatistics',
+                    title: '用户投注统计'
+                },
+                {
+                    index: 'tableRecordList',
+                    title: '桌局记录查询'
+                },
             ]
         }
     },

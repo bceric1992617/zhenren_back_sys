@@ -1,15 +1,10 @@
 <template>
 <div class="content-box">
   <div class="container">
-      <el-form :inline="true" :model="listQuery" class="demo-form-inline">
-        <el-form-item label="账变类型：">
-            <el-select v-model="listQuery.type" >
-              <el-option v-for="(item,k) in $common.tradeList" :key="k" :label="item" :value="k + 1"/>
-            </el-select>
-        </el-form-item>
-        <el-form-item label="账变时间：">
+      <el-form  :model="listQuery" :inline="true" class="demo-form-inline">
+        <el-form-item label="统计期间：">
           <el-date-picker
-          v-model="listQuery.timeRange"
+          v-model="listQuery.timerange"
           type="datetimerange"
           start-placeholder="开始时间"
           end-placeholder="结束时间"
@@ -18,69 +13,74 @@
           </el-date-picker>
         </el-form-item>
 
-        <el-form-item label="注单号：">
-          <el-input v-model="listQuery.relationId" placeholder="请  输入注单号" class="filter-item"  />
-        </el-form-item>
-        <el-form-item label="用户ID/用户名：">
-          <el-input v-model="listQuery.userUnique" placeholder="请输入用户ID/用户名" class="filter-item"  />
-        </el-form-item>
-        <el-form-item label="商户名称：">
-          <el-input v-model="listQuery.merchantNames" placeholder="请输入商户名称" class="filter-item"  />
-        </el-form-item>
 
-
-
+        <el-form-item label="注单来源商户：">
+            <el-select v-model="listQuery.merchantCode"  placeholder="请输入注单来源商户">
+              <el-option v-for="(item,k) in $common.tradeList" :key="k" :label="item" :value="k"/>
+            </el-select>
+        </el-form-item>
       
       </el-form>
-      <el-button  class="filter-item" type="primary" @click="handleFilter">
-        查询
-      </el-button>
-      <el-button  class="filter-item" @click="$common.resetArgs(listQuery);fetchData()">
-        重置
-      </el-button>
-      <el-button  class="filter-item" @click="exprotInfo('账变记录')">
-        导出
-      </el-button>
+      <div class="exchangeCurrency w-100">
+        <div class="float-l" > 
+          <el-button  class="filter-item" type="primary" @click="handleFilter">
+            查询
+          </el-button>
+          <el-button  class="filter-item" @click="$common.resetArgs(listQuery);fetchData()">
+            重置
+          </el-button>
+          <el-button  class="filter-item" @click="exprotInfo('商户注单统计')">
+            导出
+          </el-button>
+        </div>
+        <div class="float-l" >
+          <p class="float-r selectType">
+            <span>币种选择(美金兑换其他)：</span>
+            <span>
+              <select v-model="currencyType">
+                <option v-for="(item,k) in $common.currencyOriginList" :key="k" :value="item.currencyCode"> {{ item.currencyName }} </option>
+              </select>
+            </span>
+          </p>
+        </div>
+      </div>
 
 
-    <div class="table-container">
+
+    <div class="table-container m-t-20 float-l w-100 ">
       <el-table ref="Table1"
                 :data="list"
-                style="width: 100%;"
                 @sort-change="changeSort"
                 border>
-        <el-table-column :label="titleList[0]" align="center"  width="50px">
-          <template slot-scope="scope">{{scope.row.id}}</template>
+        <el-table-column :label="titleList[0]" align="center" sortable>
+          <template slot-scope="scope">{{scope.row.day}}</template>
         </el-table-column>
-        <el-table-column :label="titleList[1]" align="center" sortable>
-          <template slot-scope="scope">{{scope.row.createTime}}</template>
-        </el-table-column>
-        <el-table-column :label="titleList[2]" align="center">
-          <template slot-scope="scope">{{scope.row.username}}</template>
-        </el-table-column>
-        <el-table-column :label="titleList[3]" align="center">
-          <template slot-scope="scope">{{scope.row.userId}}</template>
-        </el-table-column>
-        <el-table-column :label="titleList[4]" align="center">
+        <el-table-column :label="titleList[1]" align="center">
           <template slot-scope="scope">{{scope.row.merchantName}}</template>
         </el-table-column>
+        <el-table-column :label="titleList[2]" align="center">
+          <template slot-scope="scope">{{scope.row.betNum}}</template>
+        </el-table-column>
+        <el-table-column :label="titleList[3]" align="center">
+          <template slot-scope="scope">{{scope.row.allBetAmount}}</template>
+        </el-table-column>
+        <el-table-column :label="titleList[4]" align="center">
+          <template slot-scope="scope">{{scope.row.allPayoutAmount}}</template>
+        </el-table-column>
         <el-table-column :label="titleList[5]" align="center">
-          <template slot-scope="scope">{{$common.tradeList[scope.row.type - 1]}} </template>
+          <template slot-scope="scope">{{scope.row.allWinAmount}}</template>
         </el-table-column>
         <el-table-column :label="titleList[6]" align="center">
-          <template slot-scope="scope">{{$common.tradeList[scope.row.tradeSources - 1]}}</template>
+          <template slot-scope="scope">{{ $common.exchangeUSDToOther(scope.row.allBetAmount,currencyType) }}</template>
         </el-table-column>
         <el-table-column :label="titleList[7]" align="center">
-          <template slot-scope="scope">{{scope.row.amount}}</template>
+          <template slot-scope="scope">{{ $common.exchangeUSDToOther(scope.row.allPayoutAmount,currencyType) }}</template>
         </el-table-column>
         <el-table-column :label="titleList[8]" align="center">
-          <template slot-scope="scope">{{scope.row.beforeAmount}}</template>
+          <template slot-scope="scope">{{ $common.exchangeUSDToOther(scope.row.allWinAmount,currencyType)  }}</template>
         </el-table-column>
         <el-table-column :label="titleList[9]" align="center">
-          <template slot-scope="scope">{{scope.row.afterAmount}}</template>
-        </el-table-column>
-        <el-table-column :label="titleList[10]" align="center">
-          <template slot-scope="scope">{{scope.row.relationId}}</template>
+          <template slot-scope="scope">{{scope.row.profitRate}}</template>
         </el-table-column>
 
       </el-table>
@@ -110,60 +110,56 @@ import * as API from '@/api/dataCenter'
 
 export default {
 
+
   data(){
     return{
-
+      titleList: [
+        "日期",
+        "注单来源商户",
+        "交易注单数",
+        "总投注额(换算USD)",
+        "总派彩额(换算USD)",
+        "总输赢金额(换算USD)",
+        "总投注额",
+        "总派彩额",
+        "总输赢金额",
+        "获利率",
+      ],
 
 
       listQuery: {
         pageNum: 1,
         pageSize: this.$common.defaultPage,
-        createTimeBy: "",
-        timeRange: '',
-        createStartTime : '',
-        createEndTime : '',
-        merchantNames : '',
-        relationId : '',
-        type : '',
-        userUnique : '',
+        daySort: '',
+        merchantCode : '',
+        endDate : '',
+        startDate : '',
+        timerange:''
       },
-
       dialogStatus: '',
+      currencyType: 'CNY',
       dialogFormVisible: false,
       list: [],
       total: 0,
       listLoading: true,
 
-      titleList: [
-        "序号",
-        "账变时间",
-        "用户名",
-        "用户ID",
-        "所属商户",
-        "账变类型",
-        "交易来源",
-        "账变金额",
-        "账变前余额",
-        "账变后余额",
-        "注单号"
-      ]
-
     }
   },
   created() {
+    this.$common.getOriginCurrencyList()
     this.fetchData();
   },
   methods:{
-
     //导出
     exprotInfo(name) {
         this.listLoading = true
         var value = JSON.parse(JSON.stringify(this.listQuery))
         value.pageNum = '';
         value.pageSize = '';
+
         let args = this.$common.transferToSearchParams(value)
   
-        API.exportChangeRecord(args).then(res => {
+        API.exportRegisterStatisticsRecord(args).then(res => {
           const link = document.createElement('a')
           let blob = new Blob([res], {type:'application/vnd.ms-excel'});
           var date = new Date();
@@ -179,12 +175,17 @@ export default {
     },
 
     changeSort(column) { //上架时间排序
+      this.listQuery.daySort = ""
+
       var args = {
         "descending" : "desc",
         "ascending" : "asc",
       }
 
-      this.listQuery.createTimeBy = args[column.order]
+      if(column.column.label == this.titleList[0]) {
+        this.listQuery.daySort = args[column.order]
+      }
+      
       this.listQuery.pageNum = 1
       this.fetchData()
     },
@@ -200,20 +201,18 @@ export default {
 
 
     handleFilter() { //搜索
-      this.listQuery.pageNum = 1
+      this.listQuery.page = 1
       if(this.listQuery.timeRange != '') {
-        this.listQuery.createStartTime = this.listQuery.timeRange[0]
-        this.listQuery.createEndTime = this.listQuery.timeRange[1]
+        this.listQuery.startTime = this.listQuery.timeRange[0]
+        this.listQuery.endTime = this.listQuery.timeRange[1]
       }
       this.fetchData()
     },
 
-
     fetchData() {
       this.listLoading = true
       let args = this.$common.transferToSearchParams(this.listQuery)
-
-      API.getChangeRecordPage(args).then(res => {
+      API.getStatisticsList(args).then(res => {
         this.listLoading = false
         if(res.code == 0) {
           this.list = res.data.records
@@ -226,6 +225,20 @@ export default {
 </script>
 
 <style scoped>
+
+.exchangeCurrency div{
+  width: 50%;
+  display: inline-block;
+}
+
+.exchangeCurrency div p {
+  padding:8px
+}
+
+.exchangeCurrency select {
+  width:100px
+}
+
 
 
 </style>

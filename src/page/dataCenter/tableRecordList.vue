@@ -511,6 +511,7 @@ export default {
 }
 
 .betInfo table tr td {
+  /* border:1px solid #EBEEF5; */
   padding:5px 0
 }
 
