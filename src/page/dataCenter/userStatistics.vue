@@ -1,6 +1,6 @@
 <template>
 <div class="content-box">
-  <div class="container">
+  <div class="container float-l w-100">
       <el-form :inline="true" :model="listQuery" class="demo-form-inline">
         <el-form-item label="统计期间：">
           <el-date-picker

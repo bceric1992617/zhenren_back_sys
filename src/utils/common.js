@@ -27,7 +27,7 @@ const common = {
     },
 
     getRuleNameList: async () => {
-        if(!common.isSet(sessionStorage.getItem('ruleNameList'))) {
+        if(1 || !common.isSet(sessionStorage.getItem('ruleNameList'))) { // 1 || 先去缓存
             var newData = {
                     all : '全部'
             }
@@ -53,7 +53,7 @@ const common = {
     },
 
     getCurrencyList: async () => {
-        if(!common.isSet(sessionStorage.getItem('currencyList'))) {
+        if(1 || !common.isSet(sessionStorage.getItem('currencyList'))) {
             var newData = {}
             await getCurrency().then(res => {
                 for(var i in res.data) {
