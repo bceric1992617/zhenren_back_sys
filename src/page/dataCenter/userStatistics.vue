@@ -129,8 +129,8 @@ export default {
         pageNum: 1,
         pageSize: this.$common.defaultPage,
         daySort: "",
-        dayEndTime : '',
         dayStartTime : '',
+        dayEndTime : '',
         timerange : ''
       },
 
@@ -140,14 +140,25 @@ export default {
       list: [],
       total: 0,
       listLoading: true,
+      countInfo:[]
 
     }
   },
   created() {
     this.$common.getOriginCurrencyList()
-    this.fetchData();
+    this.getUserTotalInfo()
+    this.fetchData()
   },
   methods:{
+    getUserTotalInfo() {
+      let args = new URLSearchParams()
+      args.append('dayStartTime', this.listQuery.timerange[0])
+      args.append('dayEndTime', this.listQuery.timerange[1])
+
+      API.getUserTotal(args).then(res => {
+        this.countInfo = res.data
+      })
+    },
 
     //导出
     exprotInfo(name) {
@@ -202,8 +213,8 @@ export default {
     handleFilter() { //搜索
       this.listQuery.pageNum = 1
       if(this.listQuery.timeRange != '') {
-        this.listQuery.startTime = this.listQuery.timeRange[0]
-        this.listQuery.endTime = this.listQuery.timeRange[1]
+        this.listQuery.dayStartTime = this.listQuery.timeRange[0]
+        this.listQuery.dayEndTime = this.listQuery.timeRange[1]
       }
       this.fetchData()
     },
@@ -215,6 +226,7 @@ export default {
         this.listLoading = false
         if(res.code == 0) {
           this.list = res.data.records
+          this.list.push(this.countInfo)
           this.total = res.data.total
         }
       })

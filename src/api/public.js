@@ -1,13 +1,5 @@
 import { http } from "@/utils/request";
 
-
-
-
-
-
-
-
-
 export function getCurrency() {
   return http.request({
     method: "post",

@@ -12,7 +12,7 @@ export function exportChangeRecord(datas) {
 export function exportRegisterStatisticsRecord(datas) {
   return http.request({
     method: "post",
-    url: "/export/export/merchant/order/statistics",
+    url: "/export/merchant/order/statistics",
     responseType : 'blob',
 
     data: datas,
@@ -21,7 +21,7 @@ export function exportRegisterStatisticsRecord(datas) {
 export function exportUserStatisticsRecord(datas) {
   return http.request({
     method: "post",
-    url: "/export/export/merchant/order/statistics",
+    url: "/export/exportUserBetSta",
     responseType : 'blob',
 
     data: datas,
@@ -101,3 +101,18 @@ export function getUserStatisticsList(datas) {
 
 
 
+export function getRegisterTotal(datas) {
+  return http.request({
+    method: "post",
+    url: "/merchant/order/statistics/total",
+    data: datas,
+  });
+}
+
+export function getUserTotal(datas) {
+  return http.request({
+    method: "post",
+    url: "/userBetSta/getTotal",
+    data: datas,
+  });
+}

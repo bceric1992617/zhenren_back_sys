@@ -6,8 +6,6 @@ import router from '../router';
 axios.defaults.baseURL = global.baseURL;
 
 const http = {
-    
-
     request ({ url, data = {}, method = 'GET', responseType, header = {} }) {
         return new Promise((resolve, reject) => {
             this._request(url, resolve, reject, data, method, responseType, header);

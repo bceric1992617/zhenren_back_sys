@@ -142,14 +142,26 @@ export default {
       list: [],
       total: 0,
       listLoading: true,
+      countInfo:[]
 
     }
   },
   created() {
     this.$common.getOriginCurrencyList()
-    this.fetchData();
+    this.getRegisterTotal()
+    this.fetchData()
   },
   methods:{
+    getRegisterTotal() {
+      let args = new URLSearchParams()
+      args.append('startDate', this.listQuery.timerange[0])
+      args.append('endDate', this.listQuery.timerange[1])
+      args.append('merchantCode', this.listQuery.merchantCode)
+      API.getRegisterTotal(args).then(res => {
+        this.countInfo = res.data
+      })
+    },
+
     //导出
     exprotInfo(name) {
         this.listLoading = true
@@ -216,9 +228,11 @@ export default {
         this.listLoading = false
         if(res.code == 0) {
           this.list = res.data.records
+          this.list.push(this.countInfo)
           this.total = res.data.total
         }
       })
+
     },
   }
 }

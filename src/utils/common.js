@@ -14,7 +14,7 @@ const common = {
 
         for(var i in common.currencyOriginList) {
 
-            if(common.currencyOriginList[i].id == 1) {
+            if(common.currencyOriginList[i].id == 2) { //2人民币
                 usdRate = common.currencyOriginList[i].currencyValue
             }
             
@@ -22,12 +22,12 @@ const common = {
                 otherRate = common.currencyOriginList[i].currencyValue
             }
         }
- 
+
         return ((num / usdRate) * otherRate).toFixed(2)
     },
 
     getRuleNameList: async () => {
-        if(1 || !common.isSet(sessionStorage.getItem('ruleNameList'))) { // 1 || 先去缓存
+        if(!common.isSet(sessionStorage.getItem('ruleNameList'))) { 
             var newData = {
                     all : '全部'
             }
@@ -44,7 +44,7 @@ const common = {
     },
 
     getOriginCurrencyList: async () => {
-        if(1 || !common.isSet(sessionStorage.getItem('currencyOriginList'))) {
+        if(!common.isSet(sessionStorage.getItem('currencyOriginList'))) {
             await getCurrency().then(res => {
                 sessionStorage.setItem('currencyOriginList', JSON.stringify(res.data))
             })
@@ -53,7 +53,7 @@ const common = {
     },
 
     getCurrencyList: async () => {
-        if(1 || !common.isSet(sessionStorage.getItem('currencyList'))) {
+        if(!common.isSet(sessionStorage.getItem('currencyList'))) {
             var newData = {}
             await getCurrency().then(res => {
                 for(var i in res.data) {
@@ -126,7 +126,7 @@ const common = {
         Message.success('复制成功')
     },
 
-
+    
     timeOut: 3000,
     defaultPage: 20,
     ruleNameList : [],
